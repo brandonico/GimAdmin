@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669">
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'cliente_abm' %}">ABM Cliente</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'membresia_abm' %}">ABM Membresía</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'asistencia_abm' %}">ABM Asistencia</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <h2 class="mb-4">Listado de Usuarios</h2>
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>DNI</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.user_id.username }}</td>
+                        <td>{{ usuario.user_id.email }}</td>
+                        <td>{{ usuario.user_id.first_name }}</td>
+                        <td>{{ usuario.user_id.last_name }}</td>
+                        <td>{{ usuario.dni }}</td>
+                        <td>{{ usuario.telefono }}</td>
+                        <td>{{ usuario.domicilio }}</td>
+                        <td>{{ usuario.fecha_nac }}</td>
+                        <td>
+                            <!-- botones -->
+                            <button type="button" class="btn btn-sm btn-primary mb-1">Editar</button>
+                            <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No hay usuarios registrados.</td>
+                        </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

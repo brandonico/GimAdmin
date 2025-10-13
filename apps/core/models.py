@@ -1,46 +1,49 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class Provincia(models.Model):
-    descripcion = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.descripcion
-
-
-class Localidad(models.Model):
-    descripcion = models.CharField(max_length=100)
-    provincia = models.ForeignKey(Provincia, on_delete=models.PROTECT, related_name="localidades")
-
-    class Meta:
-        unique_together = ('descripcion', 'provincia')  
-        
-    def __str__(self):
-        return f"{self.descripcion} ({self.provincia})"
-
-
-class Domicilio(models.Model):
-    calle = models.CharField(max_length=120)
-    numero = models.CharField(max_length=10, blank=True, null=True)
-    localidad = models.ForeignKey(Localidad, on_delete=models.PROTECT, related_name="domicilios")
-    codigo_postal = models.CharField(max_length=10)
+class userProfile(models.Model):
+    user_id = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
+    dni = models.IntegerField(unique=True, null=False)
+    telefono = models.CharField(max_length=50)
+    domicilio = models.CharField(max_length=150)
+    fecha_nac = models.DateField()
+    first_login = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.calle} {self.numero or ''}, {self.localidad}"
+        return f"{self.user_id.username} - {self.dni}"
+
+class Cliente(models.Model):
+    usuario_id = models.OneToOneField(userProfile, on_delete=models.CASCADE, null=False)
+    altura = models.IntegerField()
+    peso = models.FloatField()
+    objetivo = models.CharField(max_length=300, null=False, default="", blank=True)
+    
+    def __str__(self):
+        return f"Cliente: {self.usuario_id.user_id.first_name} {self.usuario_id.user_id.last_name} - DNI: {self.usuario_id.dni}"
+
+class Asistencia(models.Model):
+    cliente_id = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=False)
+    asistencia = models.IntegerField(default=0)
+    fecha_clase = models.DateField()
+    hora_entrada = models.TimeField()
+    hora_salida = models.TimeField()
+    capacidad = models.IntegerField()
+
+    #def __str__(self):
+    #   return f"clase:"
 
 
-class Persona(models.Model):
-    apellido = models.CharField(max_length=80)
-    nombre = models.CharField(max_length=80)
-    dni = models.CharField("Documento", max_length=20, blank=True, null=True, unique=True)
-    fecha_nacimiento = models.DateField()
-    domicilio = models.ForeignKey(Domicilio, on_delete=models.SET_NULL, null=True, blank=True, related_name="personas")
-    email = models.EmailField(unique=True)
-    telefono = models.CharField(max_length=20, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)  
-    updated_at = models.DateTimeField(auto_now=True)      
-
-    class Meta:
-        ordering = ['apellido', 'nombre']
+class Membresia(models.Model):
+    ESTADO_MEMBRESIA = [
+        ('Activa', 'Activa'),
+        ('Adeuda', 'Adeuda'),
+        ('Baja'  , 'Baja'),
+    ]
+    cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE, null=False)
+    fecha_inicio = models.DateField(null=False)
+    fecha_fin = models.DateField(null=False)
+    importe = models.FloatField(null=False)
+    estado = models.CharField(max_length=50, choices=ESTADO_MEMBRESIA)
 
     def __str__(self):
-        return f"{self.apellido}, {self.nombre}"
+        return f"Membresia de {self.cliente}. Fecha Inicio: {self.fecha_inicio}, Fecha fin: {self.fecha_fin}, estado: {self.estado}"
