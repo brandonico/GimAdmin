@@ -136,6 +136,44 @@ def usuarioAbm(request):
         }
     return render(request, 'usuario_abm.html', contexto)
 
+def crearUsuario(request):
+    if request.method == 'POST':
+        user_Form = userForm(request.POST)
+        usuario_Form = usuarioForm(request.POST)
+        contexto = {
+            'user' : request.user,
+            'usuarioForm': usuario_Form,
+            'userForm': user_Form
+        }
+        if user_Form.is_valid() and usuario_Form.is_valid():
+            u = User.objects.create_user(
+                username = user_Form.cleaned_data['username'],
+                password = user_Form.cleaned_data['password'],
+                email = user_Form.cleaned_data['email'],
+                first_name = user_Form.cleaned_data['first_name'],
+                last_name = user_Form.cleaned_data['last_name']
+            )
+            uPerfil = userProfile.objects.create(
+                user_id = u,
+                dni = usuario_Form.cleaned_data['dni'],
+                telefono = usuario_Form.cleaned_data['telefono'],
+                domicilio = usuario_Form.cleaned_data['domicilio'],
+                fecha_nac = usuario_Form.cleaned_data['fecha_nac']
+            )
+            u.save()
+            uPerfil.save()
+
+            return redirect('usuario_abm')
+    else:
+        user_Form = userForm()
+        usuario_Form = usuarioForm()
+        contexto = {
+            'user' : request.user,
+            'usuarioForm': usuario_Form,
+            'userForm': user_Form
+        }
+    return render(request, 'crearUsuario.html', contexto)
+
 def clienteAbm(request):
     contexto = {
         'clientes': Cliente.objects.all()

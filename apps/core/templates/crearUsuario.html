@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669">
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'cliente_abm' %}">ABM Cliente</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'membresia_abm' %}">ABM Membresía</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'asistencia_abm' %}">ABM Asistencia</a>
+            </li>
+        </ul>
+    </nav>
+
+     <div class="flex-grow-1 p-4">
+        <h2 class="mb-4">Crear Usuario</h2>     <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
+        <form method="post">
+            {% csrf_token %}
+            {{ userForm }}
+            {{ usuarioForm }}
+            <button type="submit" class="btn btn-primary">Registrar Usuario</button>
+        </form>
+     </div>
+
+
+
+{%endblock %}
