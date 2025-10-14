@@ -19,46 +19,53 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="flex-grow-1 p-4 d-flex flex-column">
+    <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Listado de Usuarios</h2>
-        <a href="{% url 'crearUsuario' %}"><button type="button" class="btn btn-success w-25 ml-auto" href="{% url 'crearUsuario' %}">Crear nuevo usuario</button></a>
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-dark bg-gradient">
+        <div>
+            <a class="p-1" href="{% url 'crearUsuario' %}">
+                <button type="button" class="btn btn-success" href="{% url 'crearUsuario' %}">Crear nuevo usuario</button>
+            </a>
+        </div>
+        <br>    
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark bg-gradient">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.user_id.username }}</td>
+                    <td>{{ usuario.user_id.email }}</td>
+                    <td>{{ usuario.user_id.first_name }}</td>
+                    <td>{{ usuario.user_id.last_name }}</td>
+                    <td>{{ usuario.dni }}</td>
+                    <td>{{ usuario.telefono }}</td>
+                    <td>{{ usuario.domicilio }}</td>
+                    <td>{{ usuario.fecha_nac }}</td>
+                    <td>
+                        <!-- botones -->
+                        <a href="{% url 'editarUsuario' pk=usuario.user_id.id %}">
+                        <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
+                        <a href="{% url 'eliminarUsuario' pk=usuario.user_id.id %}">
+                        <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
+                    </td>
+                </tr>
+                {% empty %}
                     <tr>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>DNI</th>
-                        <th>Teléfono</th>
-                        <th>Dirección</th>
-                        <th>Fecha de Nacimiento</th>
-                        <th>Acciones</th>
+                        <td colspan="9" class="text-center">No hay usuarios registrados.</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for usuario in usuarios %}
-                    <tr>
-                        <td>{{ usuario.user_id.username }}</td>
-                        <td>{{ usuario.user_id.email }}</td>
-                        <td>{{ usuario.user_id.first_name }}</td>
-                        <td>{{ usuario.user_id.last_name }}</td>
-                        <td>{{ usuario.dni }}</td>
-                        <td>{{ usuario.telefono }}</td>
-                        <td>{{ usuario.domicilio }}</td>
-                        <td>{{ usuario.fecha_nac }}</td>
-                        <td>
-                            <!-- botones -->
-                            <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button>
-                            <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button>
-                        </td>
-                    </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="9" class="text-center">No hay usuarios registrados.</td>
-                        </tr>
-                    {% endfor %}
-            </tbody>
+                {% endfor %}
+        </tbody>
         </table>
     </div>
 </div>

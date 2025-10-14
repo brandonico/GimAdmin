@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 
 from .models import userProfile, Cliente, Membresia, Asistencia
 from django.contrib.auth.models import User
@@ -58,10 +58,13 @@ def crearUsuario(request):
     return render(request, 'crearUsuario.html', contexto)
 
 def editarUsuario(request, id):
+
     pass
 
-def eliminarUsuario(request, id):
-    pass
+def eliminarUsuario(request, pk):
+    u = get_object_or_404(User, pk=pk)
+    u.delete()
+    return redirect('usuarioAbm')
 
 def clienteAbm(request):
     contexto = {
