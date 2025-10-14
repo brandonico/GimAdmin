@@ -7,22 +7,23 @@
         <h5 class="mb-4">Administración</h5>
         <ul class="nav flex-column" style="background-color: #143669">
             <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'cliente_abm' %}">ABM Cliente</a>
+                <a class="nav-link link-light" href="{% url 'clienteAbm' %}">ABM Cliente</a>
             </li>
             <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'membresia_abm' %}">ABM Membresía</a>
+                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
             </li>
             <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'asistencia_abm' %}">ABM Asistencia</a>
+                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
             </li>
         </ul>
     </nav>
 
     <!-- Main Content -->
-    <div class="flex-grow-1 p-4">
+    <div class="flex-grow-1 p-4 d-flex flex-column">
         <h2 class="mb-4">Listado de Usuarios</h2>
+        <a href="{% url 'crearUsuario' %}"><button type="button" class="btn btn-success w-25 ml-auto" href="{% url 'crearUsuario' %}">Crear nuevo usuario</button></a>
             <table class="table table-bordered table-hover align-middle">
-                <thead class="table-dark">
+                <thead class="table-dark bg-gradient">
                     <tr>
                         <th>Username</th>
                         <th>Email</th>
@@ -48,13 +49,13 @@
                         <td>{{ usuario.fecha_nac }}</td>
                         <td>
                             <!-- botones -->
-                            <button type="button" class="btn btn-sm btn-primary mb-1">Editar</button>
+                            <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button>
                             <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button>
                         </td>
                     </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center">No hay usuarios registrados.</td>
+                            <td colspan="9" class="text-center">No hay usuarios registrados.</td>
                         </tr>
                     {% endfor %}
             </tbody>
