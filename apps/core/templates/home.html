@@ -2,6 +2,7 @@
 
 {% block title %}GimAdmin{% endblock %}
 
+{% load static %}
 {% block extra_css %}
 <style>
     /* Secciones de altura completa */
@@ -59,7 +60,7 @@
     <p class="lead mb-4">Tu gimnasio, tu control</p>
     <!-- Placeholder para imágenes del gimnasio -->
     <div class="mb-4">
-        <p>(Aquí irán imágenes del gimnasio)</p>
+        <img src="{% static '/images/logo_transparente.png' %}" width="500">
     </div>
 
     <!-- Formulario de registro de visita -->

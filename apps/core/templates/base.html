@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Proyecto Django{% endblock %}</title>
+    <link href="{% static '/images/icono.ico' %}" rel="icon">
+    
 
     <!-- Bootstrap 5 CSS -->
     <link 
@@ -57,6 +59,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <!-- Ejemplo de link -->
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">Inicio</a>
                     </li>
@@ -76,6 +79,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'asistenciaAbm' % }">Asistencias</a>
                     </li>
+                    {% endif %}
                     {% endif %}
                 </ul>
                 
