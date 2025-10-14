@@ -26,7 +26,7 @@ def crearUsuario(request):
                 isAdmin = False
                 isStaff = False
             u = User.objects.create_user(
-                username = user_Form.cleaned_data['username'],
+                username = user_Form.cleaned_data['email'],
                 password = user_Form.cleaned_data['password'],
                 email = user_Form.cleaned_data['email'],
                 first_name = user_Form.cleaned_data['first_name'],
@@ -47,11 +47,13 @@ def crearUsuario(request):
     else:
         user_Form = userForm()
         usuario_Form = usuarioForm()
+        userTipo_Form = userTipoForm()
     
     contexto = {
         'user' : request.user,
         'usuarioForm': usuario_Form,
-        'userForm': user_Form
+        'userForm': user_Form,
+        'userTipoForm': userTipo_Form
     }
     return render(request, 'crearUsuario.html', contexto)
 
