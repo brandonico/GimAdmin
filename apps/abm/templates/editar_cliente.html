@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669">
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4 d-flex flex-column">
+        <h2 class="mb-4">Editar Cliente</h2>
+        <form method="POST" class="w-50">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mt-3">Guardar cambios</button>
+            <a href="{% url 'cliente_listar' %}" class="btn btn-secondary mt-3">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

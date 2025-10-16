@@ -7,7 +7,7 @@
         <h5 class="mb-4">Administración</h5>
         <ul class="nav flex-column" style="background-color: #143669">
             <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'usuarioAbm' %}">ABM Usuario</a>
+                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
             </li>
             <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
                 <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
@@ -19,18 +19,16 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="flex-grow-1 p-3 justify-content-end flex-column">
+    <div class="flex-grow-1 p-4 d-flex flex-column">
         <h2 class="mb-4">Listado de Clientes</h2>
-        <div>
-            <a class="p-1" href="{% url 'crearCliente' %}">
-                <button type="button" class="btn btn-success" >Crear nuevo Cliente</button>
-            </a>
-        </div>
-        <br>    
+        <a href="{% url 'cliente_elegir_usuario' %}">
+            <button type="button" class="btn btn-success w-25 mb-3">Nuevo Cliente</button>
+        </a>
+
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark bg-gradient">
                 <tr>
-                    <th>Email</th>
+                    <th>Nombre</th>
                     <th>Altura</th>
                     <th>Peso</th>
                     <th>Objetivo</th>
@@ -38,27 +36,25 @@
                 </tr>
             </thead>
             <tbody>
-                {% for cliente in clientes %}
+                {% for c in clientes %}
                 <tr>
-                    <td>{{ cliente.usuario_id.user_id.username }}</td>
-                    <td>{{ cliente.altura }}</td>
-                    <td>{{ cliente.peso }}</td>
-                    <td>{{ cliente.objetivo }}</td>
+                    <td>{{ c.usuario_id.user_id.first_name }} {{ c.usuario_id.user_id.last_name }}</td>
+                    <td>{{ c.altura }}</td>
+                    <td>{{ c.peso }}</td>
+                    <td>{{ c.objetivo }}</td>
                     <td>
-                        <!-- botones -->
-                        <a href="{% url 'editarCliente' pk=cliente.id %}">
-                        <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarCliente' pk=cliente.id %}">
-                        <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
+                        <a href="{% url 'cliente_editar' c.id %}" class="btn btn-sm btn-primary mb-1">Editar</a>
+                        <a href="{% url 'cliente_eliminar' c.id %}" class="btn btn-sm btn-danger mb-1">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center">No hay clientes registrados.</td>
-                    </tr>
+                <tr>
+                    <td colspan="5" class="text-center">No hay clientes cargados.</td>
+                </tr>
                 {% endfor %}
-        </tbody>
+            </tbody>
         </table>
     </div>
 </div>
 {% endblock %}
+

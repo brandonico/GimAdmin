@@ -32,21 +32,10 @@ class usuarioForm (forms.ModelForm):
             'domicilio': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-class clienteForm (forms.ModelForm):
+class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ['usuario_id', 'altura', 'peso', 'objetivo']
-        widgets = {
-            'usuario_id': forms.Select(attrs={'class': 'form-select'}),
-            'altura': forms.NumberInput(attrs={'class': 'form-control', 'step': '1'}),
-            'peso': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'objetivo': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        ids_usados = Cliente.objects.values_list('usuario_id', flat=True)
-        self.fields['usuario_id'].queryset = userProfile.objects.exclude(id__in=ids_usados)
+        fields = ['altura', 'peso', 'objetivo']
 
 class membresiaForm (forms.ModelForm):
     class Meta:

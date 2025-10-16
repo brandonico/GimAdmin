@@ -4,7 +4,7 @@ from .models import userProfile, Cliente, Membresia, Asistencia
 from django.contrib.auth.models import User
 
 from .forms import usuarioForm, userForm, clienteForm, membresiaForm
-
+from .forms import ClienteForm
 
 def usuarioAbm(request):
     contexto = {
@@ -91,59 +91,48 @@ def eliminarUsuario(request, pk):
     u.delete()
     return redirect('usuarioAbm')
 
-def clienteAbm(request):
-    contexto = {
-        'clientes': Cliente.objects.all()
-    }
-    return render(request, 'clienteAbm.html', contexto)
+def lista_clientes(request):
+    clientes = Cliente.objects.all()
+    return render(request, 'lista_clientes.html', {'clientes': clientes})
 
-def crearCliente(request):
+def crear_cliente(request, user_id):
+    perfil = get_object_or_404(userProfile, pk=user_id)
+
+    if Cliente.objects.filter(usuario_id=perfil).exists():
+        return redirect('cliente_listar')
+
     if request.method == 'POST':
-        cliente_Form = clienteForm(request.POST)
-        if cliente_Form.is_valid():
-            c = Cliente.objects.create(
-                usuario_id = cliente_Form.cleaned_data['usuario_id'],
-                altura = cliente_Form.cleaned_data['altura'],
-                peso = cliente_Form.cleaned_data['peso'],
-                objetivo = cliente_Form.cleaned_data['objetivo']
-            )
-            c.save()
-            return redirect('clienteAbm')
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            cliente = form.save(commit=False)
+            cliente.usuario_id = perfil
+            cliente.save()
+            return redirect('cliente_listar')
     else:
-        cliente_Form = clienteForm()
-    
-    contexto = {
-        'user' : request.user,
-        'clienteForm': cliente_Form,
-    }
-    return render(request, 'crearCliente.html', contexto)
+        form = ClienteForm()
+    return render(request, 'crear_cliente.html', {'form': form, 'perfil': perfil})
 
-def editarCliente(request, pk):
+def elegir_usuario_para_cliente(request):
+    perfiles = userProfile.objects.all()
+    return render(request, 'elegir_usuario.html', {'perfiles': perfiles})
+
+def editar_cliente(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk)
     if request.method == 'POST':
-        cliente_Form = clienteForm(request.POST)
-        if cliente_Form.is_valid():
-            c = get_object_or_404(Cliente, pk=pk)
-
-            c.altura = cliente_Form.cleaned_data['altura']
-            c.peso = cliente_Form.cleaned_data['peso']
-            c.objetivo = cliente_Form.cleaned_data['objetivo']
-            c.save()
-            return redirect('clienteAbm')
-            
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_clientes')
     else:
-        clienteInstancia = get_object_or_404(Cliente, pk=pk)
-        cliente_Form = clienteForm(instance=clienteInstancia)
-    contexto = {
-        'user' : request.user,
-        'clienteForm': cliente_Form,
-        'cliente': clienteInstancia
-    }
-    return render(request, 'editarCliente.html', contexto)
+        form = ClienteForm(instance=cliente)
+    return render(request, 'editar_cliente.html', {'form': form, 'cliente': cliente})
 
-def eliminarCliente(request, pk):
-    c = get_object_or_404(Cliente, pk=pk)
-    c.delete()
-    return redirect('clienteAbm')
+def eliminar_cliente(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk)
+    if request.method == 'POST':
+        cliente.delete()
+        return redirect('lista_clientes')
+    return render(request, 'eliminar_cliente.html', {'cliente': cliente})
 
 def membresiaAbm(request):
     contexto = {

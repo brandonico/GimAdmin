@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669">
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="flex-grow-1 p-4">
+        <h2 class="mb-4">Elegir usuario para crear cliente</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>DNI</th>
+                    <th>Email</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for perfil in perfiles %}
+                    <tr>
+                        <td>{{ perfil.user_id.first_name }} {{ perfil.user_id.last_name }}</td>
+                        <td>{{ perfil.dni }}</td>
+                        <td>{{ perfil.user_id.email }}</td>
+                        <td>
+                            <a href="{% url 'cliente_crear' perfil.id %}" class="btn btn-sm btn-primary">
+                                Seleccionar
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No hay usuarios disponibles.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

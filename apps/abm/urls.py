@@ -7,11 +7,12 @@ urlpatterns = [
     path('editarUsuario/<int:pk>/', views.editarUsuario, name='editarUsuario'),
     path('eliminarUsuario/<int:pk>/', views.eliminarUsuario, name='eliminarUsuario'),
     
-    path('cliente/', views.clienteAbm, name='clienteAbm'),
-    path('crearCliente/', views.crearCliente, name='crearCliente'),
-    path('editarCliente/<int:pk>/', views.editarCliente, name='editarCliente'),
-    path('eliminarCliente/<int:pk>/', views.eliminarCliente, name='eliminarCliente'),
-
+    path('clientes/', views.lista_clientes, name='cliente_listar'),
+    path('clientes/nuevo/<int:user_id>/', views.crear_cliente, name='cliente_crear'),
+    path('clientes/elegir-usuario/', views.elegir_usuario_para_cliente, name='cliente_elegir_usuario'),
+    path('clientes/<int:pk>/editar/', views.editar_cliente, name='cliente_editar'),
+    path('clientes/<int:pk>/eliminar/', views.eliminar_cliente, name='cliente_eliminar'),
+    
     path('membresia/', views.membresiaAbm, name='membresiaAbm'),
     path('crearMembresia/', views.crearMembresia, name='crearMembresia'),
     path('editarMembresia/<int:pk>/', views.editarMembresia, name='editarMembresia'),
