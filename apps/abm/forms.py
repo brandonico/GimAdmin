@@ -35,4 +35,32 @@ class usuarioForm (forms.ModelForm):
 class clienteForm (forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ['altura', 'peso', 'objetivo']
+        fields = ['usuario_id', 'altura', 'peso', 'objetivo']
+        widgets = {
+            'usuario_id': forms.Select(attrs={'class': 'form-select'}),
+            'altura': forms.NumberInput(attrs={'class': 'form-control', 'step': '1'}),
+            'peso': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'objetivo': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        ids_usados = Cliente.objects.values_list('usuario_id', flat=True)
+        self.fields['usuario_id'].queryset = userProfile.objects.exclude(id__in=ids_usados)
+
+class membresiaForm (forms.ModelForm):
+    class Meta:
+        model = Membresia
+        fields = ['cliente', 'fecha_inicio', 'fecha_fin', 'importe', 'estado']
+        widgets = {
+            'cliente': forms.Select(attrs={'class': 'form-select'}),
+            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'importe': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'estado': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        ids_usados = Membresia.objects.values_list('cliente', flat=True)
+        self.fields['cliente'].queryset = Cliente.objects.exclude(id__in=ids_usados)

@@ -10,10 +10,10 @@ class userProfile(models.Model):
     first_login = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.user_id.username} - {self.dni}"
+        return f"{self.user_id.first_name} {self.user_id.last_name} - {self.dni}"
 
 class Cliente(models.Model):
-    usuario_id = models.OneToOneField(userProfile, on_delete=models.CASCADE, null=False)
+    usuario_id = models.OneToOneField(userProfile, on_delete=models.CASCADE, null=False, related_name='cliente_usuario')
     altura = models.IntegerField()
     peso = models.FloatField()
     objetivo = models.CharField(max_length=300, null=False, default="", blank=True)
@@ -39,7 +39,7 @@ class Membresia(models.Model):
         ('Adeuda', 'Adeuda'),
         ('Baja'  , 'Baja'),
     ]
-    cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE, null=False)
+    cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE, null=False, related_name='membresia_cliente')
     fecha_inicio = models.DateField(null=False)
     fecha_fin = models.DateField(null=False)
     importe = models.FloatField(null=False)

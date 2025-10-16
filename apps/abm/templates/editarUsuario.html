@@ -46,15 +46,13 @@
                     </p>
                 </div>
                 {% if user.is_superuser %}
-                    <div class="model-form p-3 flex-column">
-                        <p>
+                    <div class="model-form align-self-center">
                             <label for="id_is_staff">Es staff:</label>
                             {{ userForm.is_staff }}
-                        </p>
-                        <p>
+                            <br>
+                            <br>
                             <label for="id_is_superuser">Es administrador:</label>
                             {{ userForm.is_superuser }}
-                        </p>
                     </div>
                 {% endif %}
                 <div class="model-form p-3 flex-column">

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669">
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'usuarioAbm' %}">ABM Usuario</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
+            </li>
+        </ul>
+    </nav>
+
+     <div class="flex-grow-1 p-4">
+        <h2 class="mb-4">Crear Cliente</h2>
+        <a href="{% url 'clienteAbm' %}">
+            <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
+        </a>
+        <form method="post">
+            <div class="mb-3 d-flex justify-content-around">
+                {% csrf_token %}
+                <div class="model-form p-3 flex-column">
+                    <h4>Datos de Cliente</h4><br>
+                    <p>
+                    <label for="usuario_id">Usuario:</label>
+                    {{ clienteForm.usuario_id }}
+                    </p>
+                    <p>
+                    <label for="altura">Altura:</label>
+                    {{ clienteForm.altura }}
+                    </p>
+                    <p>
+                    <label for="peso">Peso:</label>
+                    {{ clienteForm.peso }}
+                    </p>
+                    <p>
+                    <label for="objetivo">Objetivo:</label>
+                    {{ clienteForm.objetivo }}
+                    </p>
+                </div>
+            </div>
+            <div class="text-center p-3">
+                <button type="submit" class="btn btn-primary">Registrar Usuario</button>
+            </div>
+        </form>
+     </div>
+</div>
+
+{% endblock %}

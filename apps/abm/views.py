@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import userProfile, Cliente, Membresia, Asistencia
 from django.contrib.auth.models import User
 
-from .forms import usuarioForm, userForm
+from .forms import usuarioForm, userForm, clienteForm
 
 
 def usuarioAbm(request):
@@ -55,7 +55,7 @@ def editarUsuario(request, pk):
         if user_Form.is_valid() and usuario_Form.is_valid():
             u = get_object_or_404(User, pk=pk)
             uPerfil = get_object_or_404(userProfile, user_id=u)
-            
+
             u.username = user_Form.cleaned_data['email']
             u.password = user_Form.cleaned_data['password']
             u.email = user_Form.cleaned_data['email']
@@ -95,13 +95,51 @@ def clienteAbm(request):
     contexto = {
         'clientes': Cliente.objects.all()
     }
-    return render(request, 'cliente_abm.html', contexto)
+    return render(request, 'clienteAbm.html', contexto)
 
 def crearCliente(request):
-    pass
+    if request.method == 'POST':
+        cliente_Form = clienteForm(request.POST)
+        if cliente_Form.is_valid():
+            c = Cliente.objects.create(
+                usuario_id = cliente_Form.cleaned_data['usuario_id'],
+                altura = cliente_Form.cleaned_data['altura'],
+                peso = cliente_Form.cleaned_data['peso'],
+                objetivo = cliente_Form.cleaned_data['objetivo']
+            )
+            c.save()
+            return redirect('clienteAbm')
+    else:
+        cliente_Form = clienteForm()
+    
+    contexto = {
+        'user' : request.user,
+        'clienteForm': cliente_Form,
+    }
+    return render(request, 'crearCliente.html', contexto)
 
 def editarCliente(request, pk):
-    pass
+    if request.method == 'POST':
+        cliente_Form = clienteForm(request.POST)
+        if cliente_Form.is_valid():
+            c = get_object_or_404(Cliente, pk=pk)
+
+            c.usuario_id = cliente_Form.cleaned_data['usuario_id']
+            c.altura = cliente_Form.cleaned_data['altura']
+            c.peso = cliente_Form.cleaned_data['peso']
+            c.objetivo = cliente_Form.cleaned_data['objetivo']
+            c.save()
+            return redirect('clienteAbm')
+            
+    else:
+        clienteInstancia = get_object_or_404(Cliente, pk=pk)
+        cliente_Form = clienteForm(instance=clienteInstancia)
+    contexto = {
+        'user' : request.user,
+        'clienteForm': cliente_Form,
+        'cliente': clienteInstancia
+    }
+    return render(request, 'editarCliente.html', contexto)
 
 def eliminarCliente(request, pk):
     c = get_object_or_404(Cliente, pk=pk)
