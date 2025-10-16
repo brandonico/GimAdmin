@@ -5,30 +5,20 @@ from django.contrib.auth.models import User
 class userForm (forms.ModelForm):
     class Meta:
         model = User
-        fields = ['password', 'email', 'first_name', 'last_name']
+        fields = ['password', 'email', 'first_name', 'last_name', 'is_staff', 'is_superuser']
         widgets = {
-            'password': forms.PasswordInput(),
+            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_staff': forms.CheckboxInput(attrs={'class': 'form-check-input mx-1'}),
+            'is_superuser': forms.CheckboxInput(attrs={'class': 'form-check-input mx-1'}),
         }
         help_texts = {
             'username': 'Requerido. 150 caracteres o menos. Letras, dígitos y @/./+/-/_ solamente.',
-            'password': 'Requerido. Al menos 8 caracteres.'
-        }
-
-class userTipoForm (forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['is_staff', 'is_superuser']
-        widgets = {
-            'is_staff': forms.CheckboxInput(),
-            'is_superuser': forms.CheckboxInput(),
-        }
-        help_texts = {
+            'password': 'Requerido. Al menos 8 caracteres.',
             'is_staff': 'Designa si el usuario es Staff',
             'is_superuser': 'Designa si el usuario es Administrador (tiene todos los permisos)'
-        }
-        labels = {
-            'is_staff': 'Es Staff',
-            'is_superuser': 'Es Admin'
         }
 
 class usuarioForm (forms.ModelForm):
@@ -37,6 +27,9 @@ class usuarioForm (forms.ModelForm):
         fields = ['dni', 'telefono', 'domicilio', 'fecha_nac']
         widgets = {
             'fecha_nac': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'dni': forms.NumberInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+            'domicilio': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 class clienteForm (forms.ModelForm):
