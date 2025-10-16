@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669">
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'usuarioAbm' %}">ABM Usuario</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'clienteAbm' %}">ABM Cliente</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-3 justify-content-end flex-column">
+        <h2 class="mb-4">Listado de Membresia</h2>
+        <div>
+            <a class="p-1" href="{% url 'crearMembresia' %}">
+                <button type="button" class="btn btn-success" >Crear nueva Membresia</button>
+            </a>
+        </div>
+        <br>    
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark bg-gradient">
+                <tr>
+                    <th>Email</th>
+                    <th>Fecha de inicio</th>
+                    <th>Fecha de caducidad</th>
+                    <th>Importe</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for membresia in membresias %}
+                <tr>
+                    <td>{{ membresia.cliente.usuario_id.user_id.username }}</td>
+                    <td>{{ membresia.fecha_inicio }}</td>
+                    <td>{{ membresia.fecha_fin }}</td>
+                    <td>{{ membresia.importe }}</td>
+                    <td>{{ membresia.estado }}</td>
+                    <td>
+                        <!-- botones -->
+                        <a href="{% url 'editarMembresia' pk=membresia.id %}">
+                        <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
+                        <a href="{% url 'eliminarMembresia' pk=membresia.id %}">
+                        <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
+                    </td>
+                </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No hay membresias registradas.</td>
+                    </tr>
+                {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

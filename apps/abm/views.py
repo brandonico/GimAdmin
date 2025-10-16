@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import userProfile, Cliente, Membresia, Asistencia
 from django.contrib.auth.models import User
 
-from .forms import usuarioForm, userForm, clienteForm
+from .forms import usuarioForm, userForm, clienteForm, membresiaForm
 
 
 def usuarioAbm(request):
@@ -124,7 +124,6 @@ def editarCliente(request, pk):
         if cliente_Form.is_valid():
             c = get_object_or_404(Cliente, pk=pk)
 
-            c.usuario_id = cliente_Form.cleaned_data['usuario_id']
             c.altura = cliente_Form.cleaned_data['altura']
             c.peso = cliente_Form.cleaned_data['peso']
             c.objetivo = cliente_Form.cleaned_data['objetivo']
@@ -150,13 +149,53 @@ def membresiaAbm(request):
     contexto = {
         'membresias': Membresia.objects.all()
     }
-    return render(request, 'membresia_abm.html', contexto)
+    return render(request, 'membresiaAbm.html', contexto)
 
 def crearMembresia(request):
-    pass
+    if request.method == 'POST':
+        membresia_Form = membresiaForm(request.POST)
+        if membresia_Form.is_valid():
+            m = Membresia.objects.create(
+                cliente = membresia_Form.cleaned_data['cliente'],
+                fecha_inicio = membresia_Form.cleaned_data['fecha_inicio'],
+                fecha_fin = membresia_Form.cleaned_data['fecha_fin'],
+                importe = membresia_Form.cleaned_data['importe'],
+                estado = membresia_Form.cleaned_data['estado']
+            )
+            m.save()
+            return redirect('membresiaAbm')
+    else:
+        membresia_Form = membresiaForm()
+        membresiaInstancia = Membresia.objects.get()
+        contexto = {
+            'user' : request.user,
+            'membresiaForm': membresia_Form,
+            'membresia' : membresiaInstancia
+        }
+    return render(request, 'crearMembresia.html', contexto)
 
 def editarMembresia(request, pk):
-    pass
+    if request.method == 'POST':
+        membresia_Form = membresiaForm(request.POST)
+        if membresia_Form.is_valid():
+            m = get_object_or_404(Membresia, pk=pk)
+
+            m.fecha_inicio = membresia_Form.cleaned_data['fecha_inicio']
+            m.fecha_fin = membresia_Form.cleaned_data['fecha_fin']
+            m.importe = membresia_Form.cleaned_data['importe']
+            m.estado = membresia_Form.cleaned_data['estado']
+            m.save()
+            return redirect('membresiaAbm')
+            
+    else:
+        membresiaInstancia = get_object_or_404(Membresia, pk=pk)
+        membresia_Form = membresiaForm(instance=membresiaInstancia)
+    contexto = {
+        'user' : request.user,
+        'membresiaForm': membresia_Form,
+        'membresia': membresiaInstancia
+    }
+    return render(request, 'editarMembresia.html', contexto)
 
 def eliminarMembresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
