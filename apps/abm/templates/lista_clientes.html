@@ -7,7 +7,7 @@
         <h5 class="mb-4">Administración</h5>
         <ul class="nav flex-column" style="background-color: #143669">
             <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
+                <a class="nav-link link-light" href="{% url 'usuarioAbm' %}">ABM Usuario</a>
             </li>
             <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
                 <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
@@ -32,6 +32,7 @@
                     <th>Altura</th>
                     <th>Peso</th>
                     <th>Objetivo</th>
+                    <th>Imagen</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -42,6 +43,7 @@
                     <td>{{ c.altura }}</td>
                     <td>{{ c.peso }}</td>
                     <td>{{ c.objetivo }}</td>
+                    <td><img class="img-rounded" src="{{ c.avatar.url }}" width="30" height="30"></td>
                     <td>
                         <a href="{% url 'cliente_editar' c.id %}" class="btn btn-sm btn-primary mb-1">Editar</a>
                         <a href="{% url 'cliente_eliminar' c.id %}" class="btn btn-sm btn-danger mb-1">Eliminar</a>
@@ -49,7 +51,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center">No hay clientes cargados.</td>
+                    <td colspan="6" class="text-center">No hay clientes cargados.</td>
                 </tr>
                 {% endfor %}
             </tbody>
