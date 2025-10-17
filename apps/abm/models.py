@@ -17,6 +17,7 @@ class Cliente(models.Model):
     altura = models.IntegerField()
     peso = models.FloatField()
     objetivo = models.CharField(max_length=300, null=False, default="", blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default.jpg')
     
     def __str__(self):
         return f"Cliente: {self.usuario_id.user_id.first_name} {self.usuario_id.user_id.last_name} - DNI: {self.usuario_id.dni}"

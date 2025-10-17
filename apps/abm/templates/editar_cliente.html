@@ -21,7 +21,7 @@
     <!-- Main Content -->
     <div class="flex-grow-1 p-4 d-flex flex-column">
         <h2 class="mb-4">Editar Cliente</h2>
-        <form method="POST" class="w-50">
+        <form method="POST" class="w-50" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary mt-3">Guardar cambios</button>

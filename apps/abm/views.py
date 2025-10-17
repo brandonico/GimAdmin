@@ -3,8 +3,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import userProfile, Cliente, Membresia, Asistencia
 from django.contrib.auth.models import User
 
-from .forms import usuarioForm, userForm, clienteForm, membresiaForm
-from .forms import ClienteForm
+from .forms import usuarioForm, userForm, ClienteForm, membresiaForm
 
 def usuarioAbm(request):
     contexto = {
@@ -49,36 +48,20 @@ def crearUsuario(request):
     return render(request, 'crearUsuario.html', contexto)
 
 def editarUsuario(request, pk):
-    if request.method == 'POST':
-        user_Form = userForm(request.POST)
-        usuario_Form = usuarioForm(request.POST)
+    u = get_object_or_404(User, pk=pk)
+    uPerfil = get_object_or_404(userProfile, user_id=pk)
+    if request.method == 'POST':    
+        user_Form = userForm(request.POST, instance=u)
+        usuario_Form = usuarioForm(request.POST, instance=uPerfil)
         if user_Form.is_valid() and usuario_Form.is_valid():
-            u = get_object_or_404(User, pk=pk)
-            uPerfil = get_object_or_404(userProfile, user_id=u)
-
-            u.username = user_Form.cleaned_data['email']
-            u.password = user_Form.cleaned_data['password']
-            u.email = user_Form.cleaned_data['email']
-            u.first_name = user_Form.cleaned_data['first_name']
-            u.last_name = user_Form.cleaned_data['last_name']
-            u.is_superuser = user_Form.cleaned_data['is_superuser']
-            u.is_staff = user_Form.cleaned_data['is_staff']
-
-            uPerfil.dni = usuario_Form.cleaned_data['dni']
-            uPerfil.telefono = usuario_Form.cleaned_data['telefono']
-            uPerfil.domicilio = usuario_Form.cleaned_data['domicilio']
-            uPerfil.fecha_nac = usuario_Form.cleaned_data['fecha_nac']
+            u = user_Form.save(commit=False)
+            uPerfil = usuario_Form.save(commit=False)
             u.save()
             uPerfil.save()
             return redirect('usuarioAbm')
-            
     else:
-
-        userInstancia = get_object_or_404(User, pk=pk)
-        userPerfilInstancia = get_object_or_404(userProfile, user_id=userInstancia)
-        user_Form = userForm(instance=userInstancia)
-        usuario_Form = usuarioForm(instance=userPerfilInstancia)
-        
+        user_Form = userForm(instance=u)
+        usuario_Form = usuarioForm(instance=uPerfil)
     contexto = {
         'user' : request.user,
         'usuarioForm': usuario_Form,
@@ -86,7 +69,7 @@ def editarUsuario(request, pk):
     }
     return render(request, 'crearUsuario.html', contexto)
 
-def eliminarUsuario(request, pk):
+def eliminarUsuario(pk):
     u = get_object_or_404(User, pk=pk)
     u.delete()
     return redirect('usuarioAbm')
@@ -102,7 +85,7 @@ def crear_cliente(request, user_id):
         return redirect('cliente_listar')
 
     if request.method == 'POST':
-        form = ClienteForm(request.POST)
+        form = ClienteForm(request.POST, request.FILES)
         if form.is_valid():
             cliente = form.save(commit=False)
             cliente.usuario_id = perfil
@@ -119,10 +102,10 @@ def elegir_usuario_para_cliente(request):
 def editar_cliente(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
     if request.method == 'POST':
-        form = ClienteForm(request.POST, instance=cliente)
+        form = ClienteForm(request.POST, request.FILES, instance=cliente)
         if form.is_valid():
             form.save()
-            return redirect('lista_clientes')
+            return redirect('cliente_listar')
     else:
         form = ClienteForm(instance=cliente)
     return render(request, 'editar_cliente.html', {'form': form, 'cliente': cliente})
@@ -131,7 +114,7 @@ def eliminar_cliente(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
     if request.method == 'POST':
         cliente.delete()
-        return redirect('lista_clientes')
+        return redirect('cliente_listar')
     return render(request, 'eliminar_cliente.html', {'cliente': cliente})
 
 def membresiaAbm(request):
@@ -144,45 +127,39 @@ def crearMembresia(request):
     if request.method == 'POST':
         membresia_Form = membresiaForm(request.POST)
         if membresia_Form.is_valid():
-            m = Membresia.objects.create(
-                cliente = membresia_Form.cleaned_data['cliente'],
-                fecha_inicio = membresia_Form.cleaned_data['fecha_inicio'],
-                fecha_fin = membresia_Form.cleaned_data['fecha_fin'],
-                importe = membresia_Form.cleaned_data['importe'],
-                estado = membresia_Form.cleaned_data['estado']
-            )
-            m.save()
+            membresia_Form.save()
             return redirect('membresiaAbm')
     else:
         membresia_Form = membresiaForm()
-        membresiaInstancia = Membresia.objects.get()
         contexto = {
             'user' : request.user,
             'membresiaForm': membresia_Form,
-            'membresia' : membresiaInstancia
         }
     return render(request, 'crearMembresia.html', contexto)
 
 def editarMembresia(request, pk):
+    m = get_object_or_404(Membresia, pk=pk)
+    queryset = Cliente.objects.filter(pk=m.cliente.id)
     if request.method == 'POST':
-        membresia_Form = membresiaForm(request.POST)
+        membresia_Form = membresiaForm(request.POST, instance=m)
+        membresia_Form.fields['cliente'].required = False
+        membresia_Form.fields['cliente'].queryset = Cliente.objects.filter(pk=m.cliente.id)
         if membresia_Form.is_valid():
-            m = get_object_or_404(Membresia, pk=pk)
-
-            m.fecha_inicio = membresia_Form.cleaned_data['fecha_inicio']
-            m.fecha_fin = membresia_Form.cleaned_data['fecha_fin']
-            m.importe = membresia_Form.cleaned_data['importe']
-            m.estado = membresia_Form.cleaned_data['estado']
-            m.save()
+            mInst = membresia_Form.save(commit=False)
+            mInst.cliente = m.cliente
+            mInst.save()
             return redirect('membresiaAbm')
-            
+        else:
+            print(membresia_Form.errors)
     else:
-        membresiaInstancia = get_object_or_404(Membresia, pk=pk)
-        membresia_Form = membresiaForm(instance=membresiaInstancia)
+        membresia_Form = membresiaForm(instance=m)
+        membresia_Form.fields['cliente'].required = False
+        membresia_Form.fields['cliente'].queryset = queryset
+        membresia_Form.fields['cliente'].initial = m.cliente
     contexto = {
         'user' : request.user,
         'membresiaForm': membresia_Form,
-        'membresia': membresiaInstancia
+        'membresia': m
     }
     return render(request, 'editarMembresia.html', contexto)
 

@@ -35,7 +35,7 @@ class usuarioForm (forms.ModelForm):
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ['altura', 'peso', 'objetivo']
+        fields = ['altura', 'peso', 'objetivo', 'avatar']
 
 class membresiaForm (forms.ModelForm):
     class Meta:
