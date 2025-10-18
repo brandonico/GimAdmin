@@ -36,6 +36,12 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ['altura', 'peso', 'objetivo', 'avatar']
+        widgets = {
+            'altura': forms.NumberInput(attrs={'class': 'form-control', 'type': 'number'}),
+            'peso': forms.NumberInput(attrs={'class': 'form-control', 'type': 'number' }),
+            'objetivo': forms.TextInput(attrs={'class': 'form-control'}),
+            'avatar': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+        }
 
 class membresiaForm (forms.ModelForm):
     class Meta:

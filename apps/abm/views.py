@@ -94,7 +94,7 @@ def crear_cliente(request, user_id):
             return redirect('cliente_listar')
     else:
         form = ClienteForm()
-    return render(request, 'crear_cliente.html', {'form': form, 'perfil': perfil})
+    return render(request, 'crear_cliente.html', {'ClienteForm': form, 'perfil': perfil})
 
 def elegir_usuario_para_cliente(request):
     perfiles = userProfile.objects.all()
@@ -147,7 +147,7 @@ def crearMembresia(request):
         else:
             form = membresiaForm()
 
-    return render(request, 'crearMembresia.html', {'form': form, 'cliente_obj': cliente_obj})
+    return render(request, 'crearMembresia.html', {'membresiaForm': form, 'cliente_obj': cliente_obj})
 
 def elegir_cliente_para_membresia(request):
     clientes = Cliente.objects.select_related('usuario_id__user_id').all()

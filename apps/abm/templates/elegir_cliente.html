@@ -1,58 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>Elegir cliente</title></head>
-<body>
-  {% extends "base.html" %}
-  {% block content %}
-  <div class="d-flex">
-      <!-- Sidebar -->
-      <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
-          <h5 class="mb-4">Administración</h5>
-          <ul class="nav flex-column" style="background-color: #143669">
-              <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                  <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
-              </li>
-              <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                  <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
-              </li>
-              <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                  <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
-              </li>
-          </ul>
-      </nav>
+{% extends "base.html" %}
 
-      <!-- Contenido principal -->
-      <div class="flex-grow-1 p-4">
-          <h2 class="mb-4">Elegir cliente para crear membresía</h2>
-          <table class="table table-striped">
-              <thead>
-                  <tr>
-                      <th>Nombre</th>
-                      <th>DNI</th>
-                      <th>Email</th>
-                      <th>Acción</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for cliente in clientes %}
-                      <tr>
-                          <td>{{ cliente.usuario_id.user_id.first_name }} {{ cliente.usuario_id.user_id.last_name }}</td>
-                          <td>{{ cliente.usuario_id.dni }}</td>
-                          <td>{{ cliente.usuario_id.user_id.email }}</td>
-                          <td>
-                              <a href="{% url 'crearMembresia' %}?cliente={{ cliente.id }}" class="btn btn-sm btn-primary">
-                                  Seleccionar
-                              </a>
-                          </td>
-                      </tr>
-                  {% empty %}
-                      <tr><td colspan="4">No hay clientes disponibles.</td></tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-          <a href="{% url 'membresiaAbm' %}" class="btn btn-secondary mt-3">Cancelar</a>
-      </div>
-  </div>
-  {% endblock %}
-</body>
-</html>
+{% block content %}
+<div class="d-flex">    <!--tabla de clientes para generar membresias-->
+    <!-- Sidebar -->
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669">
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
+            </li>
+            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
+                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="flex-grow-1 p-3 justify-content-end flex-column">
+        <h2 class="mb-4">Elegir cliente para crear membresía</h2>
+        <table class="table table-bordered table-hover align-middle">     <!--tabla principal-->
+            <thead class="table-dark bg-gradient">
+                <tr>
+                    <th>Nombre</th>
+                    <th>DNI</th>
+                    <th>Email</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente.usuario_id.user_id.first_name }} {{ cliente.usuario_id.user_id.last_name }}</td>
+                        <td>{{ cliente.usuario_id.dni }}</td>
+                        <td>{{ cliente.usuario_id.user_id.email }}</td>
+                        <td>
+                            <a href="{% url 'crearMembresia' %}?cliente={{ cliente.id }}" class="btn btn-sm btn-primary">
+                                Seleccionar
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No hay clientes disponibles.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'membresiaAbm' %}" class="btn btn-danger mt-1">Cancelar</a>
+    </div>
+</div>
+
+{% endblock %}

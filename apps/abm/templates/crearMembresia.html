@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex">
+<div class="d-flex">    <!--formulario de membreisas-->
     <!-- Sidebar -->
     <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
         <h5 class="mb-4">Administración</h5>
@@ -27,25 +27,26 @@
             <div class="mb-3 d-flex justify-content-around">
                 {% csrf_token %}
                 <div class="model-form p-3 flex-column">
-                    <h4>Datos de Membresia</h4><br>
+                    <h4>Datos de Membresia</h4>
+                    <br>
                     <p>
-                    <label for="cliente_id">Cliente:</label>
-                    {{ membresiaForm.cliente }}
+                        <label for="cliente_id">Cliente:</label>
+                        {{ membresiaForm.cliente }}
                     </p>
                     <p>
-                    <label for="fecha_inicio">Fecha de inicio:</label>
-                    {{ membresiaForm.fecha_inicio }}
+                        <label for="fecha_inicio">Fecha de inicio:</label>
+                        {{ membresiaForm.fecha_inicio }}
                     </p>
                     <p>
-                    <label for="fecha_fin">Fecha de caducidad:</label>
-                    {{ membresiaForm.fecha_fin }}
+                        <label for="fecha_fin">Fecha de caducidad:</label>
+                        {{ membresiaForm.fecha_fin }}
                     </p>
                     <p>
-                    <label for="importe">Importe:</label>
-                    {{ membresiaForm.importe }}
+                        <label for="importe">Importe:</label>
+                        {{ membresiaForm.importe }}
                     </p>
-                    <label for="estado">Estado de membresia:</label>
-                    {{ membresiaForm.estado }}
+                        <label for="estado">Estado de membresia:</label>
+                        {{ membresiaForm.estado }}
                     </p>
                 </div>
             </div>

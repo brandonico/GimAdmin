@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex">
+<div class="d-flex">    <!--tabla de usuarios para generar clientes-->
     <!-- Sidebar -->
     <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
         <h5 class="mb-4">Administración</h5>
@@ -18,10 +18,10 @@
     </nav>
 
     <!-- Contenido principal -->
-    <div class="flex-grow-1 p-4">
+    <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Elegir usuario para crear cliente</h2>
-        <table class="table table-striped">
-            <thead>
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Nombre</th>
                     <th>DNI</th>
@@ -46,7 +46,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'cliente_listar' %}" class="btn btn-secondary mt-3">Cancelar</a>
+        <a href="{% url 'cliente_listar' %}" class="btn btn-danger mt-1">Cancelar</a>
     </div>
 </div>
 {% endblock %}
