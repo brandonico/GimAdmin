@@ -1,4 +1,5 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.forms import HiddenInput
 
 from .models import userProfile, Cliente, Membresia, Asistencia
 from django.contrib.auth.models import User
@@ -124,18 +125,33 @@ def membresiaAbm(request):
     return render(request, 'membresiaAbm.html', contexto)
 
 def crearMembresia(request):
+    cliente_id = request.GET.get('cliente')
+    cliente_obj = None
+    if cliente_id:
+        cliente_obj = get_object_or_404(Cliente, pk=cliente_id)
+
     if request.method == 'POST':
-        membresia_Form = membresiaForm(request.POST)
-        if membresia_Form.is_valid():
-            membresia_Form.save()
+        form = membresiaForm(request.POST)
+        if form.is_valid():
+            memb = form.save(commit=False)
+            if cliente_obj:
+                memb.cliente = cliente_obj
+            memb.save()
             return redirect('membresiaAbm')
     else:
-        membresia_Form = membresiaForm()
-        contexto = {
-            'user' : request.user,
-            'membresiaForm': membresia_Form,
-        }
-    return render(request, 'crearMembresia.html', contexto)
+        if cliente_obj:
+            form = membresiaForm(initial={'cliente': cliente_obj.pk})
+            if 'cliente' in form.fields:
+                form.fields['cliente'].queryset = Cliente.objects.filter(pk=cliente_obj.pk)
+                form.fields['cliente'].empty_label = None
+        else:
+            form = membresiaForm()
+
+    return render(request, 'crearMembresia.html', {'form': form, 'cliente_obj': cliente_obj})
+
+def elegir_cliente_para_membresia(request):
+    clientes = Cliente.objects.select_related('usuario_id__user_id').all()
+    return render(request, 'elegir_cliente.html', {'clientes': clientes})
 
 def editarMembresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)

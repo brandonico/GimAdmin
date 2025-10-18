@@ -15,6 +15,7 @@ urlpatterns = [
     
     path('membresia/', views.membresiaAbm, name='membresiaAbm'),
     path('crearMembresia/', views.crearMembresia, name='crearMembresia'),
+    path('membresia/elegir-cliente', views.elegir_cliente_para_membresia, name='membresia_elegir_cliente'),
     path('editarMembresia/<int:pk>/', views.editarMembresia, name='editarMembresia'),
     path('eliminarMembresia/<int:pk>/', views.eliminarMembresia, name='eliminarMembresia'),
 
