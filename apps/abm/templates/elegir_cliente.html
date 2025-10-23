@@ -3,20 +3,7 @@
 {% block content %}
 <div class="d-flex">    <!--tabla de clientes para generar membresias-->
     <!-- Sidebar -->
-    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
-        <h5 class="mb-4">Administración</h5>
-        <ul class="nav flex-column" style="background-color: #143669">
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
-            </li>
-        </ul>
-    </nav>
+    {% include 'sidebar.html' %}
 
     <!-- Contenido principal -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
@@ -33,9 +20,9 @@
             <tbody>
                 {% for cliente in clientes %}
                     <tr>
-                        <td>{{ cliente.usuario_id.user_id.first_name }} {{ cliente.usuario_id.user_id.last_name }}</td>
-                        <td>{{ cliente.usuario_id.dni }}</td>
-                        <td>{{ cliente.usuario_id.user_id.email }}</td>
+                        <td>{{ cliente.usuario.user.first_name }} {{ cliente.usuario.user.last_name }}</td>
+                        <td>{{ cliente.usuario.dni }}</td>
+                        <td>{{ cliente.usuario.user.email }}</td>
                         <td>
                             <a href="{% url 'crearMembresia' %}?cliente={{ cliente.id }}" class="btn btn-sm btn-primary">
                                 Seleccionar

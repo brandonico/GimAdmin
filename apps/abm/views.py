@@ -1,22 +1,22 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import HiddenInput
 
-from .models import userProfile, Cliente, Membresia, Asistencia
+from .models import UserProfile, Cliente, Membresia, Asistencia, Cobranza
 from django.contrib.auth.models import User
 
-from .forms import usuarioForm, userForm, ClienteForm, membresiaForm
+from .forms import UsuarioForm, UserForm, ClienteForm, MembresiaForm, AsistenciaForm, CobranzaForm
 
 def usuarioAbm(request):
     contexto = {
         'user' : request.user,
-        'usuarios': userProfile.objects.all()
+        'usuarios': UserProfile.objects.all()
     }
     return render(request, 'usuarioAbm.html', contexto)
 
 def crearUsuario(request):
     if request.method == 'POST':
-        user_Form = userForm(request.POST)
-        usuario_Form = usuarioForm(request.POST)
+        user_Form = UserForm(request.POST)
+        usuario_Form = UsuarioForm(request.POST)
         if user_Form.is_valid() and usuario_Form.is_valid():
             u = User.objects.create_user(
                 username = user_Form.cleaned_data['email'],
@@ -27,7 +27,7 @@ def crearUsuario(request):
                 is_superuser = user_Form.cleaned_data['is_superuser'],
                 is_staff = user_Form.cleaned_data['is_staff']
             )
-            uPerfil = userProfile.objects.create(
+            uPerfil = UserProfile.objects.create(
                 user_id = u,
                 dni = usuario_Form.cleaned_data['dni'],
                 telefono = usuario_Form.cleaned_data['telefono'],
@@ -38,22 +38,22 @@ def crearUsuario(request):
             uPerfil.save()
             return redirect('usuarioAbm')
     else:
-        user_Form = userForm()
-        usuario_Form = usuarioForm()
+        user_Form = UserForm()
+        usuario_Form = UsuarioForm()
     
     contexto = {
         'user' : request.user,
-        'usuarioForm': usuario_Form,
-        'userForm': user_Form,
+        'UsuarioForm': usuario_Form,
+        'UserForm': user_Form,
     }
     return render(request, 'crearUsuario.html', contexto)
 
 def editarUsuario(request, pk):
     u = get_object_or_404(User, pk=pk)
-    uPerfil = get_object_or_404(userProfile, user_id=pk)
+    uPerfil = get_object_or_404(UserProfile, user_id=pk)
     if request.method == 'POST':    
-        user_Form = userForm(request.POST, instance=u)
-        usuario_Form = usuarioForm(request.POST, instance=uPerfil)
+        user_Form = UserForm(request.POST, instance=u)
+        usuario_Form = UsuarioForm(request.POST, instance=uPerfil)
         if user_Form.is_valid() and usuario_Form.is_valid():
             u = user_Form.save(commit=False)
             uPerfil = usuario_Form.save(commit=False)
@@ -61,8 +61,8 @@ def editarUsuario(request, pk):
             uPerfil.save()
             return redirect('usuarioAbm')
     else:
-        user_Form = userForm(instance=u)
-        usuario_Form = usuarioForm(instance=uPerfil)
+        user_Form = UserForm(instance=u)
+        usuario_Form = UsuarioForm(instance=uPerfil)
     contexto = {
         'user' : request.user,
         'usuarioForm': usuario_Form,
@@ -80,7 +80,7 @@ def lista_clientes(request):
     return render(request, 'lista_clientes.html', {'clientes': clientes})
 
 def crear_cliente(request, user_id):
-    perfil = get_object_or_404(userProfile, pk=user_id)
+    perfil = get_object_or_404(UserProfile, pk=user_id)
 
     if Cliente.objects.filter(usuario_id=perfil).exists():
         return redirect('cliente_listar')
@@ -97,7 +97,7 @@ def crear_cliente(request, user_id):
     return render(request, 'crear_cliente.html', {'ClienteForm': form, 'perfil': perfil})
 
 def elegir_usuario_para_cliente(request):
-    perfiles = userProfile.objects.all()
+    perfiles = UserProfile.objects.all()
     return render(request, 'elegir_usuario.html', {'perfiles': perfiles})
 
 def editar_cliente(request, pk):
@@ -131,7 +131,7 @@ def crearMembresia(request):
         cliente_obj = get_object_or_404(Cliente, pk=cliente_id)
 
     if request.method == 'POST':
-        form = membresiaForm(request.POST)
+        form = MembresiaForm(request.POST)
         if form.is_valid():
             memb = form.save(commit=False)
             if cliente_obj:
@@ -140,24 +140,24 @@ def crearMembresia(request):
             return redirect('membresiaAbm')
     else:
         if cliente_obj:
-            form = membresiaForm(initial={'cliente': cliente_obj.pk})
+            form = MembresiaForm(initial={'cliente': cliente_obj.pk})
             if 'cliente' in form.fields:
                 form.fields['cliente'].queryset = Cliente.objects.filter(pk=cliente_obj.pk)
                 form.fields['cliente'].empty_label = None
         else:
-            form = membresiaForm()
+            form = MembresiaForm()
 
     return render(request, 'crearMembresia.html', {'membresiaForm': form, 'cliente_obj': cliente_obj})
 
 def elegir_cliente_para_membresia(request):
-    clientes = Cliente.objects.select_related('usuario_id__user_id').all()
+    clientes = Cliente.objects.select_related('usuario__user').all()
     return render(request, 'elegir_cliente.html', {'clientes': clientes})
 
 def editarMembresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
     queryset = Cliente.objects.filter(pk=m.cliente.id)
     if request.method == 'POST':
-        membresia_Form = membresiaForm(request.POST, instance=m)
+        membresia_Form = MembresiaForm(request.POST, instance=m)
         membresia_Form.fields['cliente'].required = False
         membresia_Form.fields['cliente'].queryset = Cliente.objects.filter(pk=m.cliente.id)
         if membresia_Form.is_valid():
@@ -168,7 +168,7 @@ def editarMembresia(request, pk):
         else:
             print(membresia_Form.errors)
     else:
-        membresia_Form = membresiaForm(instance=m)
+        membresia_Form = MembresiaForm(instance=m)
         membresia_Form.fields['cliente'].required = False
         membresia_Form.fields['cliente'].queryset = queryset
         membresia_Form.fields['cliente'].initial = m.cliente
@@ -188,15 +188,89 @@ def asistenciaAbm(request):
     contexto = {
         'asistencias': Asistencia.objects.all()
     }
-    return render(request, 'asistencia_abm.html', contexto)
+    return render(request, 'asistenciaAbm.html', contexto)
 
 def crearAsistencia(request):
-    pass
+    if request.method == 'POST':
+        asistencia_Form = AsistenciaForm(request.POST)
+        if asistencia_Form.is_valid():
+            asistencia_Form.save()
+            return redirect('asistenciaAbm')
+        else:
+            print(asistencia_Form.errors)
+    else:
+        asistencia_Form = AsistenciaForm()
+    contexto = {
+        'user' : request.user,
+        'asistenciaForm': asistencia_Form,
+    }
+    return render(request, 'crearAsistencia.html', contexto)
 
 def editarAsistencia(request, pk):
-    pass
+    a = get_object_or_404(Asistencia, pk=pk)
+    if request.method == 'POST':
+        asistencia_Form = AsistenciaForm(request.POST, instance=a)
+        if asistencia_Form.is_valid():
+            asistencia_Form.save()
+            return redirect('asistenciaAbm')
+        else:
+            print(asistencia_Form.errors)
+    else:
+        asistencia_Form = AsistenciaForm(instance=a)
+    contexto = {
+        'user' : request.user,
+        'asistenciaForm': asistencia_Form,
+        'asistencia': a
+    }
+    return render(request, 'editarAsistencia.html', contexto)
 
 def eliminarAsistencia(request, pk):
     a = get_object_or_404(Asistencia, pk=pk)
     a.delete()
     return redirect('asistenciaAbm')
+
+def cobranzaAbm(request):
+    contexto = {
+        'cobranzas': Cobranza.objects.all()
+    }
+    return render(request, 'cobranzaAbm.html', contexto)
+
+def crearCobranza(request):
+    if request.method == 'POST':
+        cobranza_Form = CobranzaForm(request.POST)
+        if cobranza_Form.is_valid():
+            cobranza_Form.save()
+            return redirect('cobranzaAbm')
+        else:
+            print(cobranza_Form.errors)
+    else:
+        cobranza_Form = CobranzaForm()
+    contexto = {
+        'user' : request.user,
+        'cobranzaForm': cobranza_Form,
+    }
+    return render(request, 'crearCobranza.html', contexto)
+
+def editarCobranza(request, pk):
+    c = get_object_or_404(Cobranza, pk=pk)
+    if request.method == 'POST':
+        cobranza_Form = CobranzaForm(request.POST, instance=c)
+        if cobranza_Form.is_valid():
+            cobranza_Form.save()
+            return redirect('cobranzaAbm')
+        else:
+            print(cobranza_Form.errors)
+    else:
+        cobranza_Form = CobranzaForm(instance=c)
+    contexto = {
+        'user' : request.user,
+        'cobranzaForm': cobranza_Form,
+        'cobranza': c,
+        'es_edicion' : True
+    }
+    return render(request, 'crearCobranza.html', contexto)
+
+def eliminarCobranza(request, pk):
+    a = get_object_or_404(Cobranza, pk=pk)
+    a.delete()
+    return redirect('cobranzaAbm')

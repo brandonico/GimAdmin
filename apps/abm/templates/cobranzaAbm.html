@@ -2,46 +2,45 @@
 
 {% block content %}
 <div class="d-flex">    <!--tabla de membresias-->
-    <!-- Sidebar -->
     {% include 'sidebar.html' %}
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
-        <h2 class="mb-4">Listado de Membresia</h2>
+        <h2 class="mb-4">Listado de Cobranzas</h2>
         <div>
-            <a class="p-1" href="{% url 'membresia_elegir_cliente' %}">
-                <button type="button" class="btn btn-success" >Crear nueva Membresia</button>
+            <a class="p-1" href="{% url 'crearCobranza' %}">
+                <button type="button" class="btn btn-success" >Crear nueva Cobranza</button>
             </a>
         </div>
         <br>    
         <table class="table table-bordered table-hover align-middle">   <!--tabla principal-->
             <thead class="table-dark bg-gradient">
                 <tr>
-                    <th>Email</th>
-                    <th>Fecha de inicio</th>
-                    <th>Fecha de caducidad</th>
-                    <th>Estado</th>
+                    <th>Email de cliente</th>
+                    <th>Fecha de pago</th>
+                    <th>Importe</th>
+                    <th>Metodo de pago</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for membresia in membresias %}
+                {% for cobranza in cobranzas %}
                 <tr>
-                    <td>{{ membresia.cliente.usuario.user.username }}</td>
-                    <td>{{ membresia.fecha_inicio }}</td>
-                    <td>{{ membresia.fecha_fin }}</td>
-                    <td>{{ membresia.estado }}</td>
+                    <td>{{ cobranza.membresia.cliente.usuario.user.username }}</td>
+                    <td>{{ cobranza.fecha_pago }}</td>
+                    <td>{{ cobranza.importe }}</td>
+                    <td>{{ cobranza.metodo_pago }}</td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarMembresia' pk=membresia.id %}">
+                        <a href="{% url 'editarCobranza' pk=cobranza.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarMembresia' pk=membresia.id %}">
+                        <a href="{% url 'eliminarCobranza' pk=cobranza.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center">No hay membresias registradas.</td>
+                        <td colspan="5" class="text-center">No hay cobranzas registradas.</td>
                     </tr>
                 {% endfor %}
         </tbody>

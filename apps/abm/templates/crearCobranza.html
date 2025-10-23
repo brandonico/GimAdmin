@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">    <!--formulario para crear un cliente-->
+    <!-- Sidebar -->
+    {% include 'sidebar.html' %}
+
+    <div class="flex-grow-1 p-4">
+        <h2 class="mb-4">Crear Cobranza</h2>
+        <a href="{% url 'cobranzaAbm' %}">
+            <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
+        </a>
+        <form method="post">
+            <div class="mb-3 d-flex justify-content-around">
+                {% csrf_token %}
+                <div class="model-form p-3 flex-column">
+                    <h4>Datos de Cobranza - Prueba</h4>
+                    <br>
+                    <p>
+                        <label for="membresia">Miembro:</label>
+                        {% if es_edicion %}
+                            {{ c.membresia.cliente.usuario_id.user_id.username }}
+                            {{ cobranzaForm.membresia.as_hidden}}
+                        {% else %}
+                            {{ cobranzaForm.membresia }}
+                        {% endif %}
+                    </p>
+                    <p>
+                        <label for="importe">Importe:</label>
+                        {{ cobranzaForm.importe }}
+                    </p>
+                    <p>
+                        <label for="metodo_pago">Metodo de pago:</label>
+                        {{ cobranzaForm.metodo_pago }}
+                </div>
+            </div>
+            <div class="text-center p-3">
+                <button type="submit" class="btn btn-primary">Registrar cobranza</button>
+            </div>
+        </form>
+     </div>
+</div>
+
+{% endblock %}

@@ -3,20 +3,7 @@
 {% block content %}
 <div class="d-flex">    <!--clientes-->
     <!-- Sidebar -->
-    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
-        <h5 class="mb-4">Administración</h5>
-        <ul class="nav flex-column" style="background-color: #143669">
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'usuarioAbm' %}">ABM Usuario</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
-            </li>
-        </ul>
-    </nav>
+    {% include 'sidebar.html' %}
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
@@ -41,7 +28,7 @@
             <tbody>
                 {% for c in clientes %}
                 <tr>
-                    <td>{{ c.usuario_id.user_id.first_name }} {{ c.usuario_id.user_id.last_name }}</td>
+                    <td>{{ c.usuario.user.first_name }} {{ c.usuario.user.last_name }}</td>
                     <td>{{ c.altura }}</td>
                     <td>{{ c.peso }}</td>
                     <td>{{ c.objetivo }}</td>

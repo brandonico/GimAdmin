@@ -1,0 +1,44 @@
+
+<!-- Sidebar -->
+ <div class="flex-column">
+    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
+        <h5 class="mb-4">Administración</h5>
+        <ul class="nav flex-column" style="background-color: #143669" >
+            {% if request.path == "/abm/usuario/" %}
+                <li class="nav-item mb-2 bg-gradient bg-primary p-1">
+            {% else %}
+                <li class="nav-item mb-2 bg-gradient">
+            {% endif %}
+                <a class="nav-link link-light" href="{% url 'usuarioAbm' %}">ABM Usuario</a>
+            </li>
+            {% if request.path == "/abm/clientes/" %}
+                <li class="nav-item mb-2 bg-gradient bg-primary p-1">
+            {% else %}
+                <li class="nav-item mb-2 bg-gradient">
+            {% endif %}
+                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
+            </li>
+            {% if request.path == "/abm/membresia/" %}
+                <li class="nav-item mb-2 bg-gradient bg-primary p-1">
+            {% else %}
+                <li class="nav-item mb-2 bg-gradient">
+            {% endif %}
+                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresia</a>
+            </li>
+            {% if request.path == "/abm/asistencia/" %}
+                <li class="nav-item mb-2 bg-gradient bg-primary p-1">
+            {% else %}
+                <li class="nav-item mb-2 bg-gradient">
+            {% endif %}
+                <a class="nav-link link-light" href="{% url 'asistenciaAbm'%}">ABM Asistencia</a>
+            </li>
+            {% if request.path == "/abm/cobranza/" %}  
+                <li class="nav-item mb2 bg-gradient bg-primary p-1">
+            {% else %}            
+                <li class= "nav-item mb-2 bg-gradient bg-blue">
+            {% endif %}
+                <a class="nav-link link-light" href="{%url 'cobranzaAbm'%}">ABM Cobranza</a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -3,20 +3,7 @@
 {% block content %}
 <div class="d-flex">    <!--usuarios-->
     <!-- Sidebar -->
-    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
-        <h5 class="mb-4">Administración</h5>
-        <ul class="nav flex-column" style="background-color: #143669">
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
-            </li>
-        </ul>
-    </nav>
+    {% include 'sidebar.html' %}
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
@@ -43,18 +30,18 @@
             <tbody>
                 {% for usuario in usuarios %}
                 <tr>
-                    <td>{{ usuario.user_id.email }}</td>
-                    <td>{{ usuario.user_id.first_name }}</td>
-                    <td>{{ usuario.user_id.last_name }}</td>
+                    <td>{{ usuario.user.email }}</td>
+                    <td>{{ usuario.user.first_name }}</td>
+                    <td>{{ usuario.user.last_name }}</td>
                     <td>{{ usuario.dni }}</td>
                     <td>{{ usuario.telefono }}</td>
                     <td>{{ usuario.domicilio }}</td>
                     <td>{{ usuario.fecha_nac }}</td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarUsuario' pk=usuario.user_id.id %}">
+                        <a href="{% url 'editarUsuario' pk=usuario.user.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarUsuario' pk=usuario.user_id.id %}">
+                        <a href="{% url 'eliminarUsuario' pk=usuario.user.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>

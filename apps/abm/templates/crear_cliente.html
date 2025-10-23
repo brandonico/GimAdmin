@@ -3,20 +3,7 @@
 {% block content %}
 <div class="d-flex">    <!--formulario para crear un cliente-->
     <!-- Sidebar -->
-    <nav class="bg-blue sidebar p-3" style="width: 220px; min-height: 100vh;">  
-        <h5 class="mb-4">Administración</h5>
-        <ul class="nav flex-column" style="background-color: #143669">
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'cliente_listar' %}">ABM Cliente</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'membresiaAbm' %}">ABM Membresía</a>
-            </li>
-            <li class="nav-item mb-2 color-white bg-gradient bg-blue-dark">
-                <a class="nav-link link-light" href="{% url 'asistenciaAbm' %}">ABM Asistencia</a>
-            </li>
-        </ul>
-    </nav>
+    {% include 'sidebar.html' %}
 
     <div class="flex-grow-1 p-4">
         <h2 class="mb-4">Crear Cliente para {{ perfil.user_id.first_name }} {{ perfil.user_id.last_name }}</h2>
