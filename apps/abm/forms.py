@@ -62,11 +62,9 @@ class MembresiaForm (forms.ModelForm):
 class AsistenciaForm (forms.ModelForm):
     class Meta:
         model = Asistencia
-        fields = ['cliente', 'asistencia', 'fecha_clase', 'hora_entrada', 'hora_salida', 'capacidad']
+        fields = ['cliente', 'hora_entrada', 'hora_salida', 'capacidad']
         widgets = {
             'cliente' : forms.Select(attrs={'class':'form-select'}),
-            'asistencia' : forms.NumberInput(attrs={'class':'form-control', 'step': '1'}),
-            'fecha_clase' : forms.DateInput(attrs={'class':'form-control', 'type':'date'}),
             'hora_entrada' : forms.TimeInput(attrs={'class':'form-control', 'type':'time'}),
             'hora_salida' : forms.TimeInput(attrs={'class':'form-control', 'type':'time'}),
             'capacidad' : forms.NumberInput(attrs={'class':'form-control'})    

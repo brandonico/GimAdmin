@@ -1,9 +1,25 @@
 {% extends "base.html" %}
 
+{% block script %}
+<script>
+        $(document).ready(function() {
+            $('#tablaUsuarios').DataTable({
+                language : {
+                    url: "//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+                },
+                pageLength: 5
+            });
+        });
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="d-flex">    <!--usuarios-->
     <!-- Sidebar -->
     {% include 'sidebar.html' %}
+
+    <!-- traducir a espanol-->
+
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
@@ -14,7 +30,7 @@
             </a>
         </div>
         <br>    
-        <table class="table table-bordered table-hover align-middle">
+        <table class="table table-bordered table-hover align-middle" id="tablaUsuarios">
             <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Email</th>
@@ -54,4 +70,6 @@
         </table>
     </div>
 </div>
+
+
 {% endblock %}

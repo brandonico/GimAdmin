@@ -28,7 +28,7 @@ def crearUsuario(request):
                 is_staff = user_Form.cleaned_data['is_staff']
             )
             uPerfil = UserProfile.objects.create(
-                user_id = u,
+                user = u,
                 dni = usuario_Form.cleaned_data['dni'],
                 telefono = usuario_Form.cleaned_data['telefono'],
                 domicilio = usuario_Form.cleaned_data['domicilio'],
@@ -43,8 +43,8 @@ def crearUsuario(request):
     
     contexto = {
         'user' : request.user,
-        'UsuarioForm': usuario_Form,
-        'UserForm': user_Form,
+        'usuarioForm': usuario_Form,
+        'userForm': user_Form,
     }
     return render(request, 'crearUsuario.html', contexto)
 

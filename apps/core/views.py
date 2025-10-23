@@ -9,10 +9,44 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 
 #importar modelos
-    
+from .forms import CrearAsistenciaForm
+from apps.abm.models import Cliente, UserProfile, Asistencia
+#importar tiempo para asistencia
+from django.utils import timezone
+from datetime import timedelta
+
 def home(request):
-    contexto= {
-        'cantidad': 10
+    form = CrearAsistenciaForm()
+    if request.method == 'POST':
+        print(request.POST)
+        form = CrearAsistenciaForm(request.POST)
+        if form.is_valid():
+            dni = form.cleaned_data['dni']
+            try :
+                usuario = UserProfile.objects.get(dni=dni)
+            except UserProfile.DoesNotExist:
+                usuario = None
+                
+            if not usuario:
+                contexto = {
+                    'mensaje': 'El usuario no está registrado en la base.',
+                    'cantidad': Asistencia.objects.count(),
+                    'form' : form,
+                }
+                return render(request, 'home.html', contexto)
+            else:
+                c = Cliente.objects.get(usuario=usuario)
+                entrada = timezone.now()
+                salida = entrada + timedelta(hours=1)
+                Asistencia.objects.create(cliente=c,
+                                          hora_entrada=entrada,
+                                          hora_salida=salida,
+                                          capacidad=100)
+                #cambiar capacidad dependiendo
+        
+    contexto = {
+        'cantidad': Asistencia.objects.count(),
+        'form': form
     }
     return render(request, 'home.html', contexto)
 

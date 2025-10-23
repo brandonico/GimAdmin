@@ -64,12 +64,20 @@
     </div>
 
     <!-- Formulario de registro de visita -->
+     {% if mensaje %}
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>
+            {{mensaje}}
+        </div>
+    </div>
+    {% endif %}
     <div class="card shadow-sm border-0 rounded-3 w-50 mx-auto p-4 " style="background-color: #355B9C; color: #f8f9fa;">
         <h5 class="mb-3">Registrar visita</h5>
         <form method="post" action="#">
             {% csrf_token %}
             <div class="input-group">
-                <input type="text" class="form-control" name="dni" placeholder="Ingrese su DNI" required>
+                {{ form.dni }}
                 <button class="btn btn-primary" type="submit">
                 Registrar
                 </button>

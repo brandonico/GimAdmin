@@ -5,6 +5,19 @@
     <!-- Sidebar -->
     {% include 'sidebar.html' %}
 
+    {% block script %}
+        <script>
+                $(document).ready(function() {
+                    $('#tablaMembresias').DataTable({
+                        language : {
+                            url: "//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+                        },
+                        pageLength: 5
+                    });
+                });
+        </script>
+    {% endblock %}
+
     <!-- Main Content -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Listado de Membresia</h2>
@@ -14,7 +27,7 @@
             </a>
         </div>
         <br>    
-        <table class="table table-bordered table-hover align-middle">   <!--tabla principal-->
+        <table class="table table-bordered table-hover align-middle" id="tablaMembresias">   <!--tabla principal-->
             <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Email</th>

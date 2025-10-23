@@ -24,8 +24,7 @@ class Cliente(models.Model):
 
 class Asistencia(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=False)
-    asistencia = models.IntegerField(default=0)
-    fecha_clase = models.DateField()
+    fecha_clase = models.DateField(auto_now_add=True)
     hora_entrada = models.TimeField()
     hora_salida = models.TimeField()
     capacidad = models.IntegerField()
