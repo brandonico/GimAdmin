@@ -19,7 +19,8 @@
                     <p>
                         <label for="membresia">Miembro:</label>
                         {% if es_edicion %}
-                            {{ c.membresia.cliente.usuario_id.user_id.username }}
+                            <br>
+                            {{ cobranza.membresia.cliente.usuario.user.username }}
                             {{ cobranzaForm.membresia.as_hidden}}
                         {% else %}
                             {{ cobranzaForm.membresia }}

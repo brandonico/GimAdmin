@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex">    <!--tabla de clientes para generar membresias-->
+    <!-- Sidebar -->
+    {% include 'sidebar.html' %}
+
+    <!-- Contenido principal -->
+    <div class="flex-grow-1 p-3 justify-content-end flex-column">
+        <h2 class="mb-4">Elegir membresia para crear Cobranza</h2>
+        <table class="table table-bordered table-hover align-middle">     <!--tabla principal-->
+            <thead class="table-dark bg-gradient">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Fecha de inicio</th>
+                    <th>Fecha de Finalizacion</th>
+                    <th>Estado de membresia</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for membresia in membresias %}
+                    <tr>
+                        <td>{{ membresia.cliente.usuario.user.first_name }} {{ membresia.cliente.usuario.user.last_name }}</td>
+                        <td>{{ membresia.cliente.usuario.user.email }}</td>
+                        <td>{{ membresia.fecha_inicio }}</td>
+                        <td>{{ membresia.fecha_fin }}</td>
+                        <td>{{ membresia.estado }}</td>
+                        <td>
+                            <a href="{% url 'crearCobranza' %}?membresia={{ membresia.id }}" class="btn btn-sm btn-primary">
+                                Seleccionar
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">No hay Membresias disponibles.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'cobranzaAbm' %}" class="btn btn-danger mt-1">Cancelar</a>
+    </div>
+</div>
+
+{% endblock %}

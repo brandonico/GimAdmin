@@ -6,14 +6,14 @@ from django.contrib.auth.models import User
 
 from .forms import UsuarioForm, UserForm, ClienteForm, MembresiaForm, AsistenciaForm, CobranzaForm
 
-def usuarioAbm(request):
+def lista_usuarios(request):
     contexto = {
         'user' : request.user,
         'usuarios': UserProfile.objects.all()
     }
-    return render(request, 'usuarioAbm.html', contexto)
+    return render(request, 'lista_usuarios.html', contexto)
 
-def crearUsuario(request):
+def crear_usuario(request):
     if request.method == 'POST':
         user_Form = UserForm(request.POST)
         usuario_Form = UsuarioForm(request.POST)
@@ -48,7 +48,7 @@ def crearUsuario(request):
     }
     return render(request, 'crearUsuario.html', contexto)
 
-def editarUsuario(request, pk):
+def editar_usuario(request, pk):
     u = get_object_or_404(User, pk=pk)
     uPerfil = get_object_or_404(UserProfile, user_id=pk)
     if request.method == 'POST':    
@@ -56,6 +56,7 @@ def editarUsuario(request, pk):
         usuario_Form = UsuarioForm(request.POST, instance=uPerfil)
         if user_Form.is_valid() and usuario_Form.is_valid():
             u = user_Form.save(commit=False)
+            u.username = u.email
             uPerfil = usuario_Form.save(commit=False)
             u.save()
             uPerfil.save()
@@ -67,10 +68,12 @@ def editarUsuario(request, pk):
         'user' : request.user,
         'usuarioForm': usuario_Form,
         'userForm': user_Form,
+        'es_edicion': True
     }
     return render(request, 'crearUsuario.html', contexto)
 
-def eliminarUsuario(pk):
+def eliminar_usuario(request, pk):
+    print(pk)
     u = get_object_or_404(User, pk=pk)
     u.delete()
     return redirect('usuarioAbm')
@@ -89,7 +92,7 @@ def crear_cliente(request, user_id):
         form = ClienteForm(request.POST, request.FILES)
         if form.is_valid():
             cliente = form.save(commit=False)
-            cliente.usuario_id = perfil
+            cliente.usuario = perfil
             cliente.save()
             return redirect('cliente_listar')
     else:
@@ -97,7 +100,9 @@ def crear_cliente(request, user_id):
     return render(request, 'crear_cliente.html', {'ClienteForm': form, 'perfil': perfil})
 
 def elegir_usuario_para_cliente(request):
-    perfiles = UserProfile.objects.all()
+    ids_usados = Cliente.objects.values_list('usuario', flat=True)
+    perfiles = UserProfile.objects.exclude(id__in=ids_usados)
+
     return render(request, 'elegir_usuario.html', {'perfiles': perfiles})
 
 def editar_cliente(request, pk):
@@ -109,7 +114,8 @@ def editar_cliente(request, pk):
             return redirect('cliente_listar')
     else:
         form = ClienteForm(instance=cliente)
-    return render(request, 'editar_cliente.html', {'form': form, 'cliente': cliente})
+    perfil = cliente.usuario
+    return render(request, 'crear_cliente.html', {'ClienteForm': form, 'cliente': cliente, 'es_edicion': True, 'perfil': perfil})
 
 def eliminar_cliente(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
@@ -118,13 +124,13 @@ def eliminar_cliente(request, pk):
         return redirect('cliente_listar')
     return render(request, 'eliminar_cliente.html', {'cliente': cliente})
 
-def membresiaAbm(request):
+def lista_membresias(request):
     contexto = {
         'membresias': Membresia.objects.all()
     }
-    return render(request, 'membresiaAbm.html', contexto)
+    return render(request, 'lista_membresias.html', contexto)
 
-def crearMembresia(request):
+def crear_membresia(request):
     cliente_id = request.GET.get('cliente')
     cliente_obj = None
     if cliente_id:
@@ -150,10 +156,11 @@ def crearMembresia(request):
     return render(request, 'crearMembresia.html', {'membresiaForm': form, 'cliente_obj': cliente_obj})
 
 def elegir_cliente_para_membresia(request):
-    clientes = Cliente.objects.select_related('usuario__user').all()
+    ids_usados = Membresia.objects.values_list('cliente', flat=True)
+    clientes = Cliente.objects.exclude(id__in=ids_usados)
     return render(request, 'elegir_cliente.html', {'clientes': clientes})
 
-def editarMembresia(request, pk):
+def editar_membresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
     queryset = Cliente.objects.filter(pk=m.cliente.id)
     if request.method == 'POST':
@@ -179,18 +186,18 @@ def editarMembresia(request, pk):
     }
     return render(request, 'editarMembresia.html', contexto)
 
-def eliminarMembresia(request, pk):
+def eliminar_membresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
     m.delete()
     return redirect('membresiaAbm')
 
-def asistenciaAbm(request):
+def lista_asistencias(request):
     contexto = {
         'asistencias': Asistencia.objects.all()
     }
-    return render(request, 'asistenciaAbm.html', contexto)
+    return render(request, 'lista_asistencias.html', contexto)
 
-def crearAsistencia(request):
+def crear_asistencia(request):
     if request.method == 'POST':
         asistencia_Form = AsistenciaForm(request.POST)
         if asistencia_Form.is_valid():
@@ -206,7 +213,7 @@ def crearAsistencia(request):
     }
     return render(request, 'crearAsistencia.html', contexto)
 
-def editarAsistencia(request, pk):
+def editar_asistencia(request, pk):
     a = get_object_or_404(Asistencia, pk=pk)
     if request.method == 'POST':
         asistencia_Form = AsistenciaForm(request.POST, instance=a)
@@ -224,18 +231,23 @@ def editarAsistencia(request, pk):
     }
     return render(request, 'editarAsistencia.html', contexto)
 
-def eliminarAsistencia(request, pk):
+def eliminar_asistencia(request, pk):
     a = get_object_or_404(Asistencia, pk=pk)
     a.delete()
     return redirect('asistenciaAbm')
 
-def cobranzaAbm(request):
+def lista_cobranzas(request):
     contexto = {
         'cobranzas': Cobranza.objects.all()
     }
-    return render(request, 'cobranzaAbm.html', contexto)
+    return render(request, 'lista_cobranzas.html', contexto)
 
-def crearCobranza(request):
+def elegir_membresia_para_cobranza(request):
+    cobranzas = Cobranza.objects.get().all()
+    return render(request, 'elegir_cobranza.html', {'cobranzas': cobranzas})
+
+
+def crear_cobranza(request):
     if request.method == 'POST':
         cobranza_Form = CobranzaForm(request.POST)
         if cobranza_Form.is_valid():
@@ -251,7 +263,7 @@ def crearCobranza(request):
     }
     return render(request, 'crearCobranza.html', contexto)
 
-def editarCobranza(request, pk):
+def editar_cobranza(request, pk):
     c = get_object_or_404(Cobranza, pk=pk)
     if request.method == 'POST':
         cobranza_Form = CobranzaForm(request.POST, instance=c)
@@ -270,7 +282,7 @@ def editarCobranza(request, pk):
     }
     return render(request, 'crearCobranza.html', contexto)
 
-def eliminarCobranza(request, pk):
+def eliminar_cobranza(request, pk):
     a = get_object_or_404(Cobranza, pk=pk)
     a.delete()
     return redirect('cobranzaAbm')

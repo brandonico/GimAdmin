@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex">
+<div class="d-flex">    <!--tabla de membresias-->
     <!-- Sidebar -->
     {% include 'sidebar.html' %}
 
     {% block script %}
         <script>
                 $(document).ready(function() {
-                    $('#tablaAsistencias').DataTable({
+                    $('#tablaMembresias').DataTable({
                         language : {
                             url: "//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
                         },
@@ -20,45 +20,41 @@
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
-        <h2 class="mb-4">Listado de Asistencias</h2>
+        <h2 class="mb-4">Listado de Membresia</h2>
         <div>
-            <a class="p-1" href="{% url 'crearAsistencia' %}">
-                <button type="button" class="btn btn-success" >Crear nueva Asistencia</button>
+            <a class="p-1" href="{% url 'membresia_elegir_cliente' %}">
+                <button type="button" class="btn btn-success" >Crear nueva Membresia</button>
             </a>
         </div>
         <br>    
-        <table class="table table-bordered table-hover align-middle" id="tablaAsistencias">
+        <table class="table table-bordered table-hover align-middle" {% if membresias %}id="tablaMembresias"{% endif %}>   <!--tabla principal-->
             <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Email</th>
-                    <th>Fecha de la clase</th>
-                    <th>Asistencia</th>
-                    <th>Hora de entrada</th>
-                    <th>Hora de salida</th>
-                    <th>Capacidad</th>
+                    <th>Fecha de inicio</th>
+                    <th>Fecha de caducidad</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for asistencia in asistencias %}
+                {% for membresia in membresias %}
                 <tr>
-                    <td>{{ asistencia.cliente.usuario.user.username }}</td>
-                    <td>{{ asistencia.fecha_clase }}</td>
-                    <td>{{ asistencia.asistencia }}</td>
-                    <td>{{ asistencia.hora_entrada }}</td>
-                    <td>{{ asistencia.hora_salida }}</td>
-                    <td>{{ asistencia.capacidad }}</td>
+                    <td>{{ membresia.cliente.usuario.user.username }}</td>
+                    <td>{{ membresia.fecha_inicio }}</td>
+                    <td>{{ membresia.fecha_fin }}</td>
+                    <td>{{ membresia.estado }}</td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarAsistencia' pk=asistencia.id %}">
+                        <a href="{% url 'editarMembresia' pk=membresia.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarAsistencia' pk=asistencia.id %}">
+                        <a href="{% url 'eliminarMembresia' pk=membresia.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center">No hay asistencias registradas.</td>
+                        <td colspan="6" class="text-center">No hay membresias registradas.</td>
                     </tr>
                 {% endfor %}
         </tbody>

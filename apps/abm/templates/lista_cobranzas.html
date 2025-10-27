@@ -3,19 +3,19 @@
 {% block content %}
 <div class="d-flex">    <!--tabla de membresias-->
     {% include 'sidebar.html' %}
-
-    {% block script %}
-        <script>
-                $(document).ready(function() {
-                    $('#tablaCobranzas').DataTable({
-                        language : {
-                            url: "//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
-                        },
-                        pageLength: 5
+    
+        {% block script %}
+            <script>
+                    $(document).ready(function() {
+                        $('#tablaCobranzas').DataTable({
+                            language : {
+                                url: "//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+                            },
+                            pageLength: 5
+                        });
                     });
-                });
-        </script>
-    {% endblock %}
+            </script>
+        {% endblock %}
 
 
     <!-- Main Content -->
@@ -27,7 +27,7 @@
             </a>
         </div>
         <br>    
-        <table class="table table-bordered table-hover align-middle" id="tablaCobranzas">   <!--tabla principal-->
+        <table class="table table-bordered table-hover align-middle" {% if cobranzas %}id="tablaCobranzas"{% endif %} >   <!--tabla principal-->
             <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Email de cliente</th>
