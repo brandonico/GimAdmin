@@ -15,6 +15,11 @@ from apps.abm.models import Cliente, UserProfile, Asistencia
 from django.utils import timezone
 from datetime import timedelta
 
+#importa correo
+from apps.core.utils import enviar_correo
+from django.contrib.auth.models import User
+import random, string
+
 def home(request):
     form = CrearAsistenciaForm()
     if request.method == 'POST':
@@ -85,3 +90,37 @@ def dashboard(request):
     return render(request, 'dashboard.html', contexto)
 
 
+#implementacion de correos
+
+def generar_contraseña_temporal(longitud=8):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=longitud))
+
+def recuperar_contraseña(request):
+    mensaje = ""
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try: 
+            correo = User.objects.get(email=email)
+            usuario = UserProfile.objects.get(user=correo)
+            nueva_pass = generar_contraseña_temporal()
+            correo.set_password(nueva_pass)
+            correo.save()
+            usuario.first_login = True
+            usuario.save()
+            contexto = {
+                "usuario": correo.username,
+                "nueva_pass": nueva_pass,
+            }
+            enviar_correo(
+                asunto="Recuperación de contraseña",
+                destinatario=email,
+                contexto=str(contexto),
+                plantilla_html="emails/recuperar.html"
+            )
+            
+        
+            mensaje = "Se ha enviado una nueva contraseña a tu correo."
+        except User.DoesNotExist:
+            mensaje = "No existe un usuario con ese correo."
+
+    return render(request, "recuperar_contraseña.html", {"mensaje": mensaje})

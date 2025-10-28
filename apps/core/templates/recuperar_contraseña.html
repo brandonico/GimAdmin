@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Recuperar contraseña{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<form method='post' class='form-recuperar'>
+    {% csrf_token %}
+
+    <label for='email'>
+        Correo electrónico
+    </label>
+    
+    <input type='email' name='email' id='email' placeholder='tu_correo@ejemplo.com' required>
+    
+    <button type='submit'>
+        Recuperar contraseña
+    </button>
+    {% if messages %}
+    <div class='mensajes'>
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+</form>
+
+{% endblock %}
