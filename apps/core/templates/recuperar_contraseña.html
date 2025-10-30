@@ -3,31 +3,51 @@
 {% block title %}Recuperar contraseña{% endblock %}
 
 {% block extra_css %}
+    <style>
+    /* Cambia color de bordes */
+    .input-recuperar {
+        border-color: #000000; /* borde negro */
+    }
 
+    /* Cambia color de borde en foco */
+    .input-recuperar:focus {
+        border-color: #1111ee; /* azul en foco */
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 255, 0.25); /* sombreado en foco */
+    }
+    </style>
 {% endblock %}
 
 {% block content %}
 {% load static %}
 
-<form method='post' class='form-recuperar'>
-    {% csrf_token %}
+<!-- Formulario -->
+<div class="col-md-6 mb-4 mx-auto text-center">
 
-    <label for='email'>
-        Correo electrónico
-    </label>
-    
-    <input type='email' name='email' id='email' placeholder='tu_correo@ejemplo.com' required>
-    
-    <button type='submit'>
-        Recuperar contraseña
-    </button>
-    {% if messages %}
-    <div class='mensajes'>
-        {% for message in messages %}
-            {{ message }}
+    <br><br>
+    <h1>Recuperar Contraseña</h1>
+    <br><br>
+    <div class="bg-white rounded text-center text-dark p-4 py-5 col-md-7 mx-auto">
+        <form method="post" class="form-recuperar">
+            {% csrf_token %}
+            <div class="m-3 form-group">
+                <label for="email" class="form-label text-start "><b><h5>Correo electronico</h5></b></label>
+                <br>
+                <input type="email" id="email" name="username" class="form-control input-recuperar my-2" placeholder='tu_correo@ejemplo.com' autofocus required title="Ingrese un Email valido" placeholder="email@ejemplo.com">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Recuperar Contraseña</button>
+        </form>
+    </div>
+    {% if mensaje %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>ERROR!</strong>
+        {% for mensaje in mensajes %}
+            {{ mensaje }} <br>
         {% endfor %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endif %}
-</form>
+</div>
+
 
 {% endblock %}

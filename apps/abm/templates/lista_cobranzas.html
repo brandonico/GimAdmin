@@ -22,7 +22,7 @@
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Listado de Cobranzas</h2>
         <div>
-            <a class="p-1" href="{% url 'crearCobranza' %}">
+            <a class="p-1" href="{% url 'cobranza_elegir' %}">
                 <button type="button" class="btn btn-success" >Crear nueva Cobranza</button>
             </a>
         </div>
@@ -46,9 +46,9 @@
                     <td>{{ cobranza.metodo_pago }}</td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarCobranza' pk=cobranza.id %}">
+                        <a href="{% url 'cobranza_editar' pk=cobranza.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarCobranza' pk=cobranza.id %}">
+                        <a href="{% url 'cobranza_eliminar' pk=cobranza.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>

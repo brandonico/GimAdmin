@@ -68,16 +68,16 @@
                     </li>
                     {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'usuarioAbm' %}">Usuarios</a>
+                        <a class="nav-link" href="{% url 'usuario_listar' %}">Usuarios</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'cliente_listar' %}">Clientes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'membresiaAbm' %}">Membresías</a>
+                        <a class="nav-link" href="{% url 'membresia_listar' %}">Membresías</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'asistenciaAbm' %}">Asistencias</a>
+                        <a class="nav-link" href="{% url 'asistencia_listar' %}">Asistencias</a>
                     </li>
                     {% endif %}
                     {% endif %}

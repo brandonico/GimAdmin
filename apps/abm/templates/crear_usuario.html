@@ -5,15 +5,15 @@
     <!-- Sidebar -->
     {% include 'sidebar.html' %}
 
-     <div class="flex-grow-1 p-4">
+     <div class="flex-grow-1 p-4 col-md-5">
         <h2 class="mb-4">Crear Usuario</h2>
-        <a href="{% url 'usuarioAbm' %}">
+        <a href="{% url 'usuario_listar' %}">
             <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
         </a>
         <form method="post">
-            <div class="mb-3 d-flex justify-content-around">
+            <div class="mb-3 d-flex justify-content-center gap-4 px-5">
                 {% csrf_token %}
-                <div class="model-form p-3 flex-column">
+                <div class="model-form p-3 flex-column mx-4 col-md-4">
                     <h4>Datos de Usuario</h4><br>
                     <p>
                     <label for="first_name">Nombre:</label>
@@ -28,21 +28,17 @@
                     {{ userForm.email }}
                     </p>
                     <p>
-                    <label for="password">Contraseña:</label>
-                    {{ userForm.password }}
-                    </p>
-                </div>
-                {% if user.is_superuser %}
-                <div class="model-form align-self-center">
-                            <label for="id_is_staff">Es staff:</label>
+                        <br>
+                        <label for="id_is_staff">Es staff:</label>
                             {{ userForm.is_staff }}
                             <br>
                             <br>
-                            <label for="id_is_superuser">Es administrador:</label>
+                        <label for="id_is_superuser">Es administrador:</label>
                             {{ userForm.is_superuser }}
-                    </div>
-                {% endif %}
-                <div class="model-form p-3 flex-column">
+                        <br>
+                    </p>
+                </div>
+                <div class="model-form p-3 flex-column mx-4 col-md-4">
                     <h4>Datos Personales</h4><br>
                     <p>
                         <label for="dni">DNI:</label>

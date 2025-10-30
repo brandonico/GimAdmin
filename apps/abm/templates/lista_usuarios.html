@@ -25,8 +25,8 @@
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Listado de Usuarios</h2>
         <div>
-            <a class="p-1" href="{% url 'crearUsuario' %}">
-                <button type="button" class="btn btn-success" href="{% url 'crearUsuario' %}">Crear nuevo usuario</button>
+            <a class="p-1" href="{% url 'usuario_crear' %}">
+                <button type="button" class="btn btn-success" href="{% url 'usuario_crear' %}">Crear nuevo usuario</button>
             </a>
         </div>
         <br>    
@@ -55,9 +55,9 @@
                     <td>{{ usuario.fecha_nac }}</td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarUsuario' pk=usuario.user.id %}">
+                        <a href="{% url 'usuario_editar' pk=usuario.user.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarUsuario' pk=usuario.user.id %}">
+                        <a href="{% url 'usuario_eliminar' pk=usuario.user.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>
