@@ -20,7 +20,7 @@ class Cliente(models.Model):
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default.jpg')
     
     def __str__(self):
-        return f"Cliente: {self.usuario.user.first_name} {self.usuario.user.last_name} - DNI: {self.usuario.dni}"
+        return f"{self.usuario.user.first_name} {self.usuario.user.last_name} - DNI: {self.usuario.dni}"
 
 class Asistencia(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=False)

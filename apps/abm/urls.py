@@ -14,10 +14,10 @@ urlpatterns = [
     path('clientes/<int:pk>/eliminar/', views.eliminar_cliente, name='cliente_eliminar'),
     
     path('membresia/', views.lista_membresias, name='membresia_listar'),
-    path('membresia/nueva/<int:cliente>', views.crear_membresia, name='membresia_crear'),
-    path('membresia/elegir-cliente', views.elegir_cliente_para_membresia, name='membresia_elegir_cliente'),
-    path('membresia/<int:pk>/editar', views.editar_membresia, name='membresia_editar'),
-    path('membresia/<int:pk>/eliminar', views.eliminar_membresia, name='membresia_eliminar'),
+    path('membresia/nueva/<int:cliente>/', views.crear_membresia, name='membresia_crear'),
+    path('membresia/elegir-cliente/', views.elegir_cliente_para_membresia, name='membresia_elegir_cliente'),
+    path('membresia/<int:pk>/editar/', views.editar_membresia, name='membresia_editar'),
+    path('membresia/<int:pk>/eliminar/', views.eliminar_membresia, name='membresia_eliminar'),
 
     path('asistencia/', views.lista_asistencias, name='asistencia_listar'),
     path('asistencia/nueva/<int:cliente>/', views.crear_asistencia, name='asistencia_crear'),

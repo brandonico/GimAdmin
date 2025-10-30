@@ -5,10 +5,23 @@
     <!-- Sidebar -->
     {% include 'sidebar.html' %}
 
+    {% block script %}
+        <script>
+                $(document).ready(function() {
+                    $('#tablaClientes').DataTable({
+                        language : {
+                            url: "//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+                        },
+                        pageLength: 5
+                    });
+                });
+        </script>
+    {% endblock %}
+
     <!-- Contenido principal -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
-        <h2 class="mb-4">Elegir cliente para crear membresía</h2>
-        <table class="table table-bordered table-hover align-middle">     <!--tabla principal-->
+        <h2 class="mb-4">Elegir cliente para crear {% if para_membresia %} membresía {% elif para_asistencia %} asistencia {% endif %}</h2>
+        <table class="table table-bordered table-hover align-middle" {% if clientes %}id="tablaClientes"{% endif %}>     <!--tabla principal-->
             <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Nombre</th>
@@ -23,10 +36,15 @@
                         <td>{{ cliente.usuario.user.first_name }} {{ cliente.usuario.user.last_name }}</td>
                         <td>{{ cliente.usuario.dni }}</td>
                         <td>{{ cliente.usuario.user.email }}</td>
-                        <td>
-                            <a href="{% url 'membresia_crear' %}?cliente={{ cliente.id }}" class="btn btn-sm btn-primary">
+                        <td>{% if para_membresia %}
+                            <a href="{% url 'membresia_crear' cliente=cliente.id %}" class="btn btn-sm btn-primary">
                                 Seleccionar
                             </a>
+                            {% elif para_asistencia %}
+                            <a href="{% url 'asistencia_crear' cliente=cliente.id %}" class="btn btn-sm btn-primary">
+                                Seleccionar
+                            </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% empty %}
@@ -34,7 +52,11 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'membresia_listar' %}" class="btn btn-danger mt-1">Cancelar</a>
+        {% if para_membresia %}
+            <a href="{% url 'membresia_listar' %}" class="btn btn-danger mt-1">Cancelar</a>
+        {% elif para_asistencia %}
+            <a href="{% url 'asistencia_listar' %}" class="btn btn-danger mt-1">Cancelar</a>
+        {% endif %}
     </div>
 </div>
 

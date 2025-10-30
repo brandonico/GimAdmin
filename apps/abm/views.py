@@ -60,6 +60,7 @@ def editar_usuario(request, pk):
         if user_Form.is_valid() and usuario_Form.is_valid():
             u = user_Form.save(commit=False)
             u.username = u.email
+            u.is_active = user_Form.cleaned_data['is_active']
             uPerfil = usuario_Form.save(commit=False)
             u.save()
             uPerfil.save()
@@ -78,7 +79,8 @@ def editar_usuario(request, pk):
 def eliminar_usuario(request, pk):
     print(pk)
     u = get_object_or_404(User, pk=pk)
-    u.delete()
+    u.is_active = False
+    u.save()
     return redirect('usuario_listar')
 
 def lista_clientes(request):
@@ -140,56 +142,54 @@ def crear_membresia(request, cliente):
         form = MembresiaForm(request.POST)
         if form.is_valid():
             memb = form.save(commit=False)
-            if cliente_obj:
-                memb.cliente = cliente_obj
+            memb.cliente = cliente_obj
             memb.save()
-            return redirect('lista_membresias')
-    else:
-        if cliente_obj:
-            form = MembresiaForm(initial={'cliente': cliente_obj.pk})
-            if 'cliente' in form.fields:
-                form.fields['cliente'].queryset = Cliente.objects.filter(pk=cliente_obj.pk)
-                form.fields['cliente'].empty_label = None
+            return redirect('membresia_listar')
         else:
-            form = MembresiaForm()
+            print(form.errors)
+    else:
+        form = MembresiaForm()
+    
+    contexto = {
+        'membresiaForm': form,
+        'cliente': cliente_obj
+    }
 
-    return render(request, 'crear_membresia.html', {'membresiaForm': form, 'cliente_obj': cliente_obj})
+    return render(request, 'crear_membresia.html', contexto)
 
 def elegir_cliente_para_membresia(request):
     ids_usados = Membresia.objects.values_list('cliente', flat=True)
     clientes = Cliente.objects.exclude(id__in=ids_usados)
-    return render(request, 'elegir_cliente.html', {'clientes': clientes})
+    contexto = {
+        'clientes': clientes,
+        'para_membresia': True
+    }
+    return render(request, 'elegir_cliente.html', contexto)
 
 def editar_membresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
-    queryset = Cliente.objects.filter(pk=m.cliente.id)
+    c = Cliente.objects.get(id=m.cliente.id)
     if request.method == 'POST':
         membresia_Form = MembresiaForm(request.POST, instance=m)
-        membresia_Form.fields['cliente'].required = False
-        membresia_Form.fields['cliente'].queryset = Cliente.objects.filter(pk=m.cliente.id)
         if membresia_Form.is_valid():
-            mInst = membresia_Form.save(commit=False)
-            mInst.cliente = m.cliente
-            mInst.save()
-            return redirect('lista_membresias')
+            membresia_Form.save()
+            return redirect('membresia_listar')
         else:
             print(membresia_Form.errors)
     else:
         membresia_Form = MembresiaForm(instance=m)
-        membresia_Form.fields['cliente'].required = False
-        membresia_Form.fields['cliente'].queryset = queryset
-        membresia_Form.fields['cliente'].initial = m.cliente
     contexto = {
         'user' : request.user,
         'membresiaForm': membresia_Form,
-        'membresia': m,
+        'cliente' : c,
+        'es_edicion': True
     }
-    return render(request, 'editarMembresia.html', contexto)
+    return render(request, 'crear_membresia.html', contexto)
 
 def eliminar_membresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
     m.delete()
-    return redirect('lista_membresias')
+    return redirect('membresia_listar')
 
 def lista_asistencias(request):
     contexto = {
@@ -198,15 +198,22 @@ def lista_asistencias(request):
     return render(request, 'lista_asistencias.html', contexto)
 
 def elegir_cliente_para_asistencia(request):
-    clientes= Cliente.objects.get().all()
-    return render(request, 'elegir_cobranza.html', {'clientes': clientes})
+    clientes = Cliente.objects.all()
+    contexto = {
+        'clientes': clientes,
+        'para_asistencia': True
+    }
+    return render(request, 'elegir_cliente.html', contexto)
 
-def crear_asistencia(request):
+def crear_asistencia(request, cliente):
+    c = Cliente.objects.get(id=cliente)
     if request.method == 'POST':
         asistencia_Form = AsistenciaForm(request.POST)
         if asistencia_Form.is_valid():
-            asistencia_Form.save()
-            return redirect('lista_asistencias')
+            a = asistencia_Form.save(commit=False)
+            a.cliente = c
+            a.save()
+            return redirect('asistencia_listar')
         else:
             print(asistencia_Form.errors)
     else:
@@ -223,7 +230,7 @@ def editar_asistencia(request, pk):
         asistencia_Form = AsistenciaForm(request.POST, instance=a)
         if asistencia_Form.is_valid():
             asistencia_Form.save()
-            return redirect('lista_asistencias')
+            return redirect('asistencia_listar')
         else:
             print(asistencia_Form.errors)
     else:
@@ -231,14 +238,15 @@ def editar_asistencia(request, pk):
     contexto = {
         'user' : request.user,
         'asistenciaForm': asistencia_Form,
-        'asistencia': a
+        'asistencia': a,
+        'es_edicion': True
     }
-    return render(request, 'editarAsistencia.html', contexto)
+    return render(request, 'crear_asistencia.html', contexto)
 
 def eliminar_asistencia(request, pk):
     a = get_object_or_404(Asistencia, pk=pk)
     a.delete()
-    return redirect('lista_asistencias')
+    return redirect('asistencia_listar')
 
 def lista_cobranzas(request):
     contexto = {
@@ -247,16 +255,19 @@ def lista_cobranzas(request):
     return render(request, 'lista_cobranzas.html', contexto)
 
 def elegir_membresia_para_cobranza(request):
-    membresias = Membresia.objects.get().all()
-    return render(request, 'elegir_cobranza.html', {'membresias': membresias})
+    membresias = Membresia.objects.all()
+    return render(request, 'elegir_membresia.html', {'membresias': membresias})
 
 
-def crear_cobranza(request):
+def crear_cobranza(request, membresia):
+    m = get_object_or_404(Membresia, id=membresia)
     if request.method == 'POST':
         cobranza_Form = CobranzaForm(request.POST)
         if cobranza_Form.is_valid():
-            cobranza_Form.save()
-            return redirect('lista_cobranzas')
+            c = cobranza_Form.save(commit=False)
+            c.membresia = m
+            c.save()
+            return redirect('cobranza_listar')
         else:
             print(cobranza_Form.errors)
     else:
@@ -264,16 +275,18 @@ def crear_cobranza(request):
     contexto = {
         'user' : request.user,
         'cobranzaForm': cobranza_Form,
+        'membresia': m
     }
     return render(request, 'crear_cobranza.html', contexto)
 
 def editar_cobranza(request, pk):
     c = get_object_or_404(Cobranza, pk=pk)
+    m = get_object_or_404(Membresia, id=c.membresia.id)
     if request.method == 'POST':
         cobranza_Form = CobranzaForm(request.POST, instance=c)
         if cobranza_Form.is_valid():
             cobranza_Form.save()
-            return redirect('lista_cobranzas')
+            return redirect('cobranza_listar')
         else:
             print(cobranza_Form.errors)
     else:
@@ -282,6 +295,7 @@ def editar_cobranza(request, pk):
         'user' : request.user,
         'cobranzaForm': cobranza_Form,
         'cobranza': c,
+        'membresia': m,
         'es_edicion' : True
     }
     return render(request, 'crear_cobranza.html', contexto)
@@ -289,4 +303,4 @@ def editar_cobranza(request, pk):
 def eliminar_cobranza(request, pk):
     a = get_object_or_404(Cobranza, pk=pk)
     a.delete()
-    return redirect('lista_cobranzas')
+    return redirect('cobranza_listar')

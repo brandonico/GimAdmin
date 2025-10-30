@@ -6,35 +6,34 @@
     {% include 'sidebar.html' %}
 
      <div class="flex-grow-1 p-4">
-        <h2 class="mb-4">Crear Membresia</h2>
+        <h2 class="mb-4">{% if es_edicion %}Editar {% else %}Crear {% endif %}Membresia para {{cliente.usuario.user.first_name}} {{cliente.usuario.user.last_name}}</h2>
         <a href="{% url 'membresia_listar' %}">
             <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
         </a>
         <form method="post">
             <div class="mb-3 d-flex justify-content-around">
                 {% csrf_token %}
-                <div class="model-form p-3 flex-column">
+                <div class="model-form p-3 flex-column col-md-4">
                     <h4>Datos de Membresia</h4>
                     <br>
-                    <p>
-                        <label for="cliente_id">Cliente:</label>
-                        {{ membresiaForm.cliente }}
-                    </p>
                     <p>
                         <label for="fecha_inicio">Fecha de inicio:</label>
                         {{ membresiaForm.fecha_inicio }}
                     </p>
+                    <br>
                     <p>
                         <label for="fecha_fin">Fecha de caducidad:</label>
                         {{ membresiaForm.fecha_fin }}
                     </p>
+                    <br>
+                    <p>
                         <label for="estado">Estado de membresia:</label>
                         {{ membresiaForm.estado }}
                     </p>
                 </div>
             </div>
             <div class="text-center p-3">
-                <button type="submit" class="btn btn-primary">Registrar membresia</button>
+                <button type="submit" class="btn btn-primary">{% if es_edicion %}Edit{% else %}Registr{% endif %}ar membresia</button>
             </div>
         </form>
      </div>

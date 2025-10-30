@@ -6,7 +6,7 @@
     {% include 'sidebar.html' %}
 
      <div class="flex-grow-1 p-4 col-md-5">
-        <h2 class="mb-4">Crear Usuario</h2>
+        <h2 class="mb-4">{% if es_edicion %}Editar {% else %}Crear {% endif %}Usuario</h2>
         <a href="{% url 'usuario_listar' %}">
             <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
         </a>
@@ -31,11 +31,16 @@
                         <br>
                         <label for="id_is_staff">Es staff:</label>
                             {{ userForm.is_staff }}
-                            <br>
-                            <br>
+                        <br>
+                        <br>
                         <label for="id_is_superuser">Es administrador:</label>
                             {{ userForm.is_superuser }}
                         <br>
+                        {% if es_edicion %}
+                        <br>
+                            <label for="id_is_active">Está activo:</label>
+                            {{ userForm.is_active }}
+                        {% endif %}
                     </p>
                 </div>
                 <div class="model-form p-3 flex-column mx-4 col-md-4">
