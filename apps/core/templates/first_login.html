@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Cambiar contraseña{% endblock %}
+
+{% block extra_css %}
+<style>
+    section {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        scroll-behavior: smooth;
+    }
+
+    #btn-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-6 mb-4 mx-auto text-center">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Cambiar contraseña</h2>
+    <p>Por seguridad, necesitás establecer una nueva contraseña antes de continuar.</p>
+
+    <form method="post" action="{% url 'cambiar_password_primera_vez' %}" class="text-center">
+        {% csrf_token %}
+        <br>
+        <div class="mb-3">
+            <label for="new_password" class="form-label text-start">Nueva contraseña</label>
+            <input type="password" id="new_password" name="new_password" class="form-control" required placeholder="Ingresá tu nueva contraseña">
+        </div>
+
+        <div class="mb-3">
+            <label for="confirm_password" class="form-label text-start">Confirmar contraseña</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required placeholder="Repetí la contraseña">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+</div>
+
+<!-- Botón volver arriba -->
+<a id="btn-top" href="#banner" class="btn btn-danger btn-lg rounded-circle">
+    <i class="bi bi-arrow-up"></i>
+</a>
+{% endblock %}

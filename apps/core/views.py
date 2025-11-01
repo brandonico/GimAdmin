@@ -105,7 +105,7 @@ def cambiar_password_primera_vez(request):
         else:
             messages.error(request, 'Las contraseñas no coinciden.')
 
-    return render(request, 'cambiar_password_primera_vez.html')
+    return render(request, 'first_login.html')
 
 def logoutView(request):
     logout(request)
@@ -117,12 +117,13 @@ def dashboard(request):
         'user' : request.user
     }
     return render(request, 'dashboard.html', contexto)
-
-"""@login_required
+""""
+@login_required
 def dashboard(request):
     # 🔹 Si es primer login, obligamos a cambiar la contraseña
     if request.user.userprofile.first_login:
         return redirect('cambiar_password_primera_vez')
+        """
 
 #implementacion de correos
 
@@ -163,4 +164,3 @@ def recuperar_contraseña(request):
         'user': request.user
     }
     return render(request, 'dashboard.html', contexto)
-"""
