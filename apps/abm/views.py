@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from .forms import UsuarioForm, UserForm, ClienteForm, MembresiaForm, AsistenciaForm, CobranzaForm
 import random, string
+from apps.core.utils import enviar_correo
 
 def lista_usuarios(request):
     contexto = {
@@ -21,9 +22,10 @@ def crear_usuario(request):
         user_Form = UserForm(request.POST)
         usuario_Form = UsuarioForm(request.POST)
         if user_Form.is_valid() and usuario_Form.is_valid():
+            contraseña = generar_contraseña_temporal()
             u = User.objects.create_user(
                 username = user_Form.cleaned_data['email'],
-                password = generar_contraseña_temporal(),
+                password = contraseña,
                 email = user_Form.cleaned_data['email'],
                 first_name = user_Form.cleaned_data['first_name'],
                 last_name = user_Form.cleaned_data['last_name'],
@@ -39,6 +41,14 @@ def crear_usuario(request):
             )
             u.save()
             uPerfil.save()
+
+            enviar_correo(
+                asunto="Usuario creado",
+                destinatario=u.email,
+                contexto="La informacion de su cuenta de gimadmin es:\nEmail: "+ u.email +"\nContraseña: "+ contraseña,
+                plantilla_html=""
+            )
+
             return redirect('usuario_listar')
     else:
         user_Form = UserForm()
