@@ -10,6 +10,13 @@
         <a href="{% url 'usuario_listar' %}">
             <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
         </a>
+        {% if mensaje %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>ERROR!</strong>
+                    {{ mensaje }} <br>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
         <form method="post">
             <div class="mb-3 d-flex justify-content-center gap-4 px-5">
                 {% csrf_token %}
