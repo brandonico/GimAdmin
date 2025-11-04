@@ -5,10 +5,24 @@
     <!-- Sidebar -->
     {% include 'sidebar.html' %}
 
+    {% block script %}
+        <script>
+                $(document).ready(function() {
+                    $('#tablaMembresias').DataTable({
+                        language : {
+                            url: "//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+                        },
+                        pageLength: 5
+                    });
+                });
+        </script>
+    {% endblock %}
+
+
     <!-- Contenido principal -->
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Elegir membresia para crear Cobranza</h2>
-        <table class="table table-bordered table-hover align-middle">     <!--tabla principal-->
+        <table class="table table-bordered table-hover align-middle" {% if membresias %}id="tablaMembresias"{% endif %}>     <!--tabla principal-->
             <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Nombre</th>
@@ -28,7 +42,7 @@
                         <td>{{ membresia.fecha_fin }}</td>
                         <td>{{ membresia.estado }}</td>
                         <td>
-                            <a href="{% url 'crearCobranza' %}?membresia={{ membresia.id }}" class="btn btn-sm btn-primary">
+                            <a href="{% url 'cobranza_crear' membresia=membresia.id %}" class="btn btn-sm btn-primary">
                                 Seleccionar
                             </a>
                         </td>
@@ -38,7 +52,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'cobranzaAbm' %}" class="btn btn-danger mt-1">Cancelar</a>
+        <a href="{% url 'cobranza_listar' %}" class="btn btn-danger mt-1">Cancelar</a>
     </div>
 </div>
 

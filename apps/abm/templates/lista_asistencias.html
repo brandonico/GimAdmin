@@ -22,7 +22,7 @@
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Listado de Asistencias</h2>
         <div>
-            <a class="p-1" href="{% url 'crearAsistencia' %}">
+            <a class="p-1" href="{% url 'asistencia_elegir_cliente' %}">
                 <button type="button" class="btn btn-success" >Crear nueva Asistencia</button>
             </a>
         </div>
@@ -50,9 +50,9 @@
                     <td>{{ asistencia.capacidad }}</td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarAsistencia' pk=asistencia.id %}">
+                        <a href="{% url 'asistencia_editar' pk=asistencia.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarAsistencia' pk=asistencia.id %}">
+                        <a href="{% url 'asistencia_eliminar' pk=asistencia.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>

@@ -12,6 +12,16 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} - {self.dni}"
 
+"""from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+    else:
+        instance.userprofile.save()"""
+
 class Cliente(models.Model):
     usuario = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=False, related_name='cliente_usuario')
     altura = models.IntegerField()
@@ -20,7 +30,7 @@ class Cliente(models.Model):
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default.jpg')
     
     def __str__(self):
-        return f"Cliente: {self.usuario.user.first_name} {self.usuario.user.last_name} - DNI: {self.usuario.dni}"
+        return f"{self.usuario.user.first_name} {self.usuario.user.last_name} - DNI: {self.usuario.dni}"
 
 class Asistencia(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=False)

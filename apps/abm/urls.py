@@ -2,10 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('usuario/', views.lista_usuarios, name='usuarioAbm'),
-    path('crearUsuario/', views.crear_usuario, name='crearUsuario'),
-    path('editarUsuario/<int:pk>/', views.editar_usuario, name='editarUsuario'),
-    path('eliminarUsuario/<int:pk>/', views.eliminar_usuario, name='eliminarUsuario'),
+    path('usuario/', views.lista_usuarios, name='usuario_listar'),
+    path('usuario/nuevo', views.crear_usuario, name='usuario_crear'),
+    path('usuario/<int:pk>/editar', views.editar_usuario, name='usuario_editar'),
+    path('usuario/<int:pk>/eliminar', views.eliminar_usuario, name='usuario_eliminar'),
     
     path('clientes/', views.lista_clientes, name='cliente_listar'),
     path('clientes/nuevo/<int:user_id>/', views.crear_cliente, name='cliente_crear'),
@@ -13,19 +13,21 @@ urlpatterns = [
     path('clientes/<int:pk>/editar/', views.editar_cliente, name='cliente_editar'),
     path('clientes/<int:pk>/eliminar/', views.eliminar_cliente, name='cliente_eliminar'),
     
-    path('membresia/', views.lista_membresias, name='membresiaAbm'),
-    path('crearMembresia/', views.crear_membresia, name='crearMembresia'),
-    path('membresia/elegir-cliente', views.elegir_cliente_para_membresia, name='membresia_elegir_cliente'),
-    path('editarMembresia/<int:pk>/', views.editar_membresia, name='editarMembresia'),
-    path('eliminarMembresia/<int:pk>/', views.eliminar_membresia, name='eliminarMembresia'),
+    path('membresia/', views.lista_membresias, name='membresia_listar'),
+    path('membresia/nueva/<int:cliente>/', views.crear_membresia, name='membresia_crear'),
+    path('membresia/elegir-cliente/', views.elegir_cliente_para_membresia, name='membresia_elegir_cliente'),
+    path('membresia/<int:pk>/editar/', views.editar_membresia, name='membresia_editar'),
+    path('membresia/<int:pk>/eliminar/', views.eliminar_membresia, name='membresia_eliminar'),
 
-    path('asistencia/', views.lista_asistencias, name='asistenciaAbm'),
-    path('crearAsistencia/', views.crear_asistencia, name='crearAsistencia'),
-    path('editarAsistencia/<int:pk>/', views.editar_asistencia, name='editarAsistencia'),
-    path('eliminarAsistencia/<int:pk>/', views.eliminar_asistencia, name='eliminarAsistencia'),
+    path('asistencia/', views.lista_asistencias, name='asistencia_listar'),
+    path('asistencia/nueva/<int:cliente>/', views.crear_asistencia, name='asistencia_crear'),
+    path('asistencia/elegir-cliente', views.elegir_cliente_para_asistencia, name='asistencia_elegir_cliente'),
+    path('asistencia/<int:pk>/editar/', views.editar_asistencia, name='asistencia_editar'),
+    path('asistencia/<int:pk>/eliminar/', views.eliminar_asistencia, name='asistencia_eliminar'),
 
-    path('cobranza/', views.lista_cobranzas, name='cobranzaAbm'),
-    path('crearCobranza/', views.crear_cobranza, name='crearCobranza'),
-    path('editarCobranza/<int:pk>/', views.editar_cobranza, name='editarCobranza'),
-    path('eliminarCobranza/<int:pk>/', views.eliminar_cobranza, name='eliminarCobranza'),
+    path('cobranza/', views.lista_cobranzas, name='cobranza_listar'),
+    path('cobranza/nueva/<int:membresia>/', views.crear_cobranza, name='cobranza_crear'),
+    path('cobranza/elegir-membresia/', views.elegir_membresia_para_cobranza, name="cobranza_elegir"),
+    path('cobranza/<int:pk>/editar/', views.editar_cobranza, name='cobranza_editar'),
+    path('cobranza/<int:pk>/eliminar/', views.eliminar_cobranza, name='cobranza_eliminar'),
 ]

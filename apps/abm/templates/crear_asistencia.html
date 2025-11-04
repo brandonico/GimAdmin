@@ -6,29 +6,15 @@
     {% include 'sidebar.html' %}
 
      <div class="flex-grow-1 p-4">
-        <h2 class="mb-4">Editar Asistencia</h2>
-        <a href="{% url 'asistenciaAbm' %}">
+        <h2 class="mb-4">{% if es_edicion %}Editar {% else %}Crear {% endif %}Asistencia {{cliente.usuario.user.first_name}} {{cliente.usuario.user.last_name}}</h2>
+        <a href="{% url 'asistencia_listar' %}">
             <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
         </a>
         <form method="post">
             <div class="mb-3 d-flex justify-content-around">
                 {% csrf_token %}
-                <div class="model-form p-3 flex-column">
-                    <h4>Datos de la Asistencia</h4><br>
-                    <p>
-                        {{ asistencia.cliente.usuario.user.first_name }} {{ asistencia.cliente.usuario.user.last_name }}
-                    <br>
-                        {{ asistencia.cliente.usuario.user.email }}
-                    </p>
-                    {{ asistenciaForm.cliente.as_hidden}}
-                    </p>
-                    <label for="asistencia">Asistencia:</label>
-                    {{ asistenciaForm.asistencia }}
-                    </p>
-                    <p>
-                    <label for="fecha_clase">Fecha de la clase:</label>
-                    {{ asistenciaForm.fecha_clase }}
-                    </p>
+                <div class="model-form p-3 flex-column col-md-4">
+                    <h4>Datos de Asistencia</h4><br>
                     <p>
                     <label for="hora_entrada">Hora de entrada:</label>
                     {{ asistenciaForm.hora_entrada }}
@@ -40,11 +26,10 @@
                     <p>
                     <label for="importe">capacidad:</label>
                     {{ asistenciaForm.capacidad }}
-                    </p>
                 </div>
             </div>
             <div class="text-center p-3">
-                <button type="submit" class="btn btn-primary">Editar asistencia</button>
+                <button type="submit" class="btn btn-primary">{% if es_edicion %}Edit{% else %}Registr{% endif %}ar asistencia</button>
             </div>
         </form>
      </div>

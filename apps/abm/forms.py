@@ -5,9 +5,8 @@ from django.contrib.auth.models import User
 class UserForm (forms.ModelForm):
     class Meta:
         model = User
-        fields = ['password', 'email', 'first_name', 'last_name', 'is_staff', 'is_superuser']
+        fields = ['email', 'first_name', 'last_name', 'is_staff', 'is_superuser']
         widgets = {
-            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -20,6 +19,16 @@ class UserForm (forms.ModelForm):
             'is_staff': 'Designa si el usuario es Staff',
             'is_superuser': 'Designa si el usuario es Administrador (tiene todos los permisos)'
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+            # agrega is_active si está instanciado
+        if self.instance and self.instance.pk:
+            self.fields['is_active'] = forms.BooleanField(
+                initial=self.instance.is_active,
+                widget=forms.CheckboxInput(attrs={'class': 'form-check-input mx-1'})
+            )
+    
 
 class UsuarioForm (forms.ModelForm):
     class Meta:
@@ -46,39 +55,28 @@ class ClienteForm(forms.ModelForm):
 class MembresiaForm (forms.ModelForm):
     class Meta:
         model = Membresia
-        fields = ['cliente', 'fecha_inicio', 'fecha_fin', 'estado']
+        fields = ['fecha_inicio', 'fecha_fin', 'estado']
         widgets = {
-            'cliente': forms.Select(attrs={'class': 'form-select'}),
             'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'estado': forms.Select(attrs={'class': 'form-select'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        ids_usados = Membresia.objects.values_list('cliente', flat=True)
-        self.fields['cliente'].queryset = Cliente.objects.exclude(id__in=ids_usados)
-
 class AsistenciaForm (forms.ModelForm):
     class Meta:
         model = Asistencia
-        fields = ['cliente', 'hora_entrada', 'hora_salida', 'capacidad']
+        fields = [ 'hora_entrada', 'hora_salida', 'capacidad']
         widgets = {
-            'cliente' : forms.Select(attrs={'class':'form-select'}),
             'hora_entrada' : forms.TimeInput(attrs={'class':'form-control', 'type':'time'}),
             'hora_salida' : forms.TimeInput(attrs={'class':'form-control', 'type':'time'}),
             'capacidad' : forms.NumberInput(attrs={'class':'form-control'})    
         }
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['cliente'].queryset = Cliente.objects.all()
 
 class CobranzaForm (forms.ModelForm):
     class Meta:
         model = Cobranza
-        fields = ['importe','membresia','metodo_pago']
+        fields = ['importe','metodo_pago']
         widgets ={
             'importe': forms.NumberInput(attrs={'class':'form-control', 'step':'0.01'}),
-            'membresia': forms.Select(attrs={'class':'form-select'}),
             'metodo_pago': forms.Select(attrs={'class':'form-select'})
         }

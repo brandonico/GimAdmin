@@ -46,9 +46,9 @@
                     <td>{{ membresia.estado }}</td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarMembresia' pk=membresia.id %}">
+                        <a href="{% url 'membresia_editar' pk=membresia.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarMembresia' pk=membresia.id %}">
+                        <a href="{% url 'membresia_eliminar' pk=membresia.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>

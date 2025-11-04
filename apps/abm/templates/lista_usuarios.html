@@ -25,39 +25,61 @@
     <div class="flex-grow-1 p-3 justify-content-end flex-column">
         <h2 class="mb-4">Listado de Usuarios</h2>
         <div>
-            <a class="p-1" href="{% url 'crearUsuario' %}">
-                <button type="button" class="btn btn-success" href="{% url 'crearUsuario' %}">Crear nuevo usuario</button>
+            <a class="p-1" href="{% url 'usuario_crear' %}">
+                <button type="button" class="btn btn-success" href="{% url 'usuario_crear' %}">Crear nuevo usuario</button>
             </a>
         </div>
         <br>    
         <table class="table table-bordered table-hover align-middle" id="tablaUsuarios">
             <thead class="table-dark bg-gradient">
                 <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Apellido y Nombre</th>
                     <th>Email</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Fecha de Nacimiento</th>
+                    <th>Estado</th>
+                    <th>Staff</th>
+                    <th>Admin</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for usuario in usuarios %}
                 <tr>
+                    <td>{{ usuario.user.id }}</td>
+                    <td>{{ usuario.user.username }}</td>
+                    <td>{{ usuario.user.last_name }} {{ usuario.user.first_name }}</td>
                     <td>{{ usuario.user.email }}</td>
-                    <td>{{ usuario.user.first_name }}</td>
-                    <td>{{ usuario.user.last_name }}</td>
-                    <td>{{ usuario.dni }}</td>
-                    <td>{{ usuario.telefono }}</td>
-                    <td>{{ usuario.domicilio }}</td>
-                    <td>{{ usuario.fecha_nac }}</td>
+                    <td>
+                        {% if usuario.user.is_active %}
+                            <i class="bi bi-check text-success">
+                                Activo
+                            </i>
+                        {% else %}
+                            <i class="bi bi-x text-danger">
+                                Inactivo
+                            </i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if usuario.user.is_staff %}
+                            <i class="bi bi-check text-success">
+                                Es Staff
+                            </i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if usuario.user.is_superuser %}
+                            <i class="bi bi-check text-success">
+                                Es Admin
+                            </i>
+                        {% endif %}
+                    </td>
                     <td>
                         <!-- botones -->
-                        <a href="{% url 'editarUsuario' pk=usuario.user.id %}">
+                        <a href="{% url 'usuario_editar' pk=usuario.user.id %}">
                         <button type="button" class="btn btn-sm btn-primary mb-1" href="">Editar</button></a>
-                        <a href="{% url 'eliminarUsuario' pk=usuario.user.id %}">
+                        <a href="{% url 'usuario_eliminar' pk=usuario.user.id %}">
                         <button type="button" class="btn btn-sm btn-danger mb-1">Eliminar</button></a>
                     </td>
                 </tr>

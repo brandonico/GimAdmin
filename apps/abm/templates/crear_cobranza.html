@@ -6,26 +6,16 @@
     {% include 'sidebar.html' %}
 
     <div class="flex-grow-1 p-4">
-        <h2 class="mb-4">Crear Cobranza</h2>
-        <a href="{% url 'cobranzaAbm' %}">
+        <h2 class="mb-4">{% if es_edicion %}Edit{% else %}Cre{% endif %}ar Cobranza para {{membresia.cliente.usuario.user.first_name}} {{membresia.cliente.usuario.user.last_name}}</h2>
+        <a href="{% url 'cobranza_listar' %}">
             <button type="button" class="btn btn-sm btn-secondary mb-1">Volver</button>
         </a>
         <form method="post">
             <div class="mb-3 d-flex justify-content-around">
                 {% csrf_token %}
-                <div class="model-form p-3 flex-column">
-                    <h4>Datos de Cobranza - Prueba</h4>
+                <div class="model-form p-3 flex-column col-md-4">
+                    <h4>Datos de Cobranza</h4>
                     <br>
-                    <p>
-                        <label for="membresia">Miembro:</label>
-                        {% if es_edicion %}
-                            <br>
-                            {{ cobranza.membresia.cliente.usuario.user.username }}
-                            {{ cobranzaForm.membresia.as_hidden}}
-                        {% else %}
-                            {{ cobranzaForm.membresia }}
-                        {% endif %}
-                    </p>
                     <p>
                         <label for="importe">Importe:</label>
                         {{ cobranzaForm.importe }}
