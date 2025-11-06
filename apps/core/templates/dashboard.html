@@ -3,21 +3,31 @@
 {% block title %}Bienvenido!{% endblock %}
 
 {% block extra_css %}
-
+    <style>
+    .principal {
+        background-color: #091b3a;
+    };
+    .boton-relativo {
+        background-color: lightblue;
+    };
+    </style>
 {% endblock %}
 
 {% block content %}
 {% load static %}
 <main class="d-flex flex-nowrap">
-    <div class="flex container-fluid">
+    <div class="flex container-fluid m-4 rounded principal position-relative">
         <h1>Bienvenido!  {{user.first_name}}</h1>
         <h2> {{ mensaje }}</h2>
-
+        <br>
+        <div class="boton-relativo position-absolute top-0 end-0 m-1">
+            <a href="{% url 'cambiar_password_primera_vez' %}" class="btn-secondary btn">Cambiar Contraseña</a>
+        </div>
         {% if user.is_staff %}
 
-        <section>
+        <section class="">
             <div class="row">
-                <div class="mostrarDatos col-md-6">
+                <div class="mostrarDatos col-md-4">
                     <h2>Usuarios</h2>
                     <ul>
                         {% for usuario in usuarios %}

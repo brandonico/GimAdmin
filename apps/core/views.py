@@ -68,7 +68,7 @@ def loginView(request):
         if user is not None : 
             login(request, user)
             
-            profile, created = UserProfile.objects.get_or_create(user=user)
+            profile = UserProfile.objects.get(user=user)
             if profile.first_login:
                 return redirect('cambiar_password_primera_vez')
             return redirect('dashboard')
@@ -101,7 +101,8 @@ def cambiar_password_primera_vez(request):
             update_session_auth_hash(request, user)
 
             messages.success(request, 'Contraseña cambiada correctamente.')
-            return redirect('dashboard')
+            logout(request)
+            return redirect('login')
         else:
             messages.error(request, 'Las contraseñas no coinciden.')
 

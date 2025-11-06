@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from .forms import UsuarioForm, UserForm, ClienteForm, MembresiaForm, AsistenciaForm, CobranzaForm
 import random, string
 from apps.core.utils import enviar_correo
+from django.db import IntegrityError
 
 def lista_usuarios(request):
     contexto = {
@@ -18,48 +19,57 @@ def generar_contraseña_temporal(longitud=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=longitud))
 
 def crear_usuario(request):
-    if request.method == 'POST':
-        user_Form = UserForm(request.POST)
-        usuario_Form = UsuarioForm(request.POST)
-        if user_Form.is_valid() and usuario_Form.is_valid():
-            contraseña = generar_contraseña_temporal()
-            u = User.objects.create_user(
-                username = user_Form.cleaned_data['email'],
-                password = contraseña,
-                email = user_Form.cleaned_data['email'],
-                first_name = user_Form.cleaned_data['first_name'],
-                last_name = user_Form.cleaned_data['last_name'],
-                is_superuser = user_Form.cleaned_data['is_superuser'],
-                is_staff = user_Form.cleaned_data['is_staff']
-            )
-            uPerfil = UserProfile.objects.create(
-                user = u,
-                dni = usuario_Form.cleaned_data['dni'],
-                telefono = usuario_Form.cleaned_data['telefono'],
-                domicilio = usuario_Form.cleaned_data['domicilio'],
-                fecha_nac = usuario_Form.cleaned_data['fecha_nac']
-            )
-            u.save()
-            uPerfil.save()
-
-            enviar_correo(
-                asunto="Usuario creado",
-                destinatario=u.email,
-                contexto="La informacion de su cuenta de gimadmin es:\nEmail: "+ u.email +"\nContraseña: "+ contraseña,
-                plantilla_html=""
-            )
-
-            return redirect('usuario_listar')
-    else:
-        user_Form = UserForm()
-        usuario_Form = UsuarioForm()
-    
+    mensaje =""
+    user_Form = UserForm()
+    usuario_Form = UsuarioForm()
     contexto = {
         'user' : request.user,
         'usuarioForm': usuario_Form,
         'userForm': user_Form,
+        'mensaje': mensaje
     }
+    if request.method == 'POST':
+        user_Form = UserForm(request.POST)
+        usuario_Form = UsuarioForm(request.POST)
+        if user_Form.is_valid() and usuario_Form.is_valid(): #la form de usuario valida unicidad de dni
+            contraseña = generar_contraseña_temporal()
+            email_existe = User.objects.filter(username=user_Form.cleaned_data['email']).exists()
+            if not email_existe:
+                u = User.objects.create_user(
+                    username = user_Form.cleaned_data['email'],
+                    password = contraseña,
+                    email = user_Form.cleaned_data['email'],
+                    first_name = user_Form.cleaned_data['first_name'],
+                    last_name = user_Form.cleaned_data['last_name'],
+                    is_superuser = user_Form.cleaned_data['is_superuser'],
+                    is_staff = user_Form.cleaned_data['is_staff']
+                )
+                uPerfil = UserProfile.objects.create(
+                    user = u,
+                    dni = usuario_Form.cleaned_data['dni'],
+                    telefono = usuario_Form.cleaned_data['telefono'],
+                    domicilio = usuario_Form.cleaned_data['domicilio'],
+                    fecha_nac = usuario_Form.cleaned_data['fecha_nac']
+                )
+                u.save()
+                uPerfil.save()
+                """enviar_correo(
+                    asunto="Usuario creado",
+                    destinatario=u.email,
+                    contexto="La informacion de su cuenta de gimadmin es:\nEmail: "+ u.email +"\nContraseña: "+ contraseña,
+                    plantilla_html=""
+                )"""
+                return redirect('usuario_listar')
+            if email_existe:
+                contexto['mensaje']= "El usuario ya existe (email)"
+                print("emailexiste"+ user_Form.cleaned_data['email'])
+                return render(request, 'crear_usuario.html', contexto)
+        else:
+            if UserProfile.objects.filter(dni=usuario_Form.data.get('dni')).exists():
+                contexto['mensaje']= "El usuario ya existe (dni)"
+                print('dniexiste'+ usuario_Form.data.get('dni'))
     return render(request, 'crear_usuario.html', contexto)
+        
 
 def editar_usuario(request, pk):
     u = get_object_or_404(User, pk=pk)
