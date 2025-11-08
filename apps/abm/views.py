@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import UserProfile, Cliente, Membresia, Asistencia, Cobranza
 from django.contrib.auth.models import User
+from django.contrib.admin.views.decorators import staff_member_required
 
 from .forms import UsuarioForm, UserForm, ClienteForm, MembresiaForm, AsistenciaForm, CobranzaForm
 import random, string
 from apps.core.utils import enviar_correo
-from django.db import IntegrityError
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def lista_usuarios(request):
     contexto = {
         'user' : request.user,
@@ -18,6 +19,7 @@ def lista_usuarios(request):
 def generar_contraseña_temporal(longitud=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=longitud))
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def crear_usuario(request):
     mensaje =""
     user_Form = UserForm()
@@ -53,12 +55,12 @@ def crear_usuario(request):
                 )
                 u.save()
                 uPerfil.save()
-                """enviar_correo(
+                enviar_correo(
                     asunto="Usuario creado",
                     destinatario=u.email,
                     contexto="La informacion de su cuenta de gimadmin es:\nEmail: "+ u.email +"\nContraseña: "+ contraseña,
                     plantilla_html=""
-                )"""
+                )
                 return redirect('usuario_listar')
             if email_existe:
                 contexto['mensaje']= "El usuario ya existe (email)"
@@ -70,7 +72,7 @@ def crear_usuario(request):
                 print('dniexiste'+ usuario_Form.data.get('dni'))
     return render(request, 'crear_usuario.html', contexto)
         
-
+@staff_member_required(login_url='/permisos_insuficientes/')
 def editar_usuario(request, pk):
     u = get_object_or_404(User, pk=pk)
     uPerfil = get_object_or_404(UserProfile, user_id=pk)
@@ -96,6 +98,7 @@ def editar_usuario(request, pk):
     }
     return render(request, 'crear_usuario.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def eliminar_usuario(request, pk):
     print(pk)
     u = get_object_or_404(User, pk=pk)
@@ -103,10 +106,12 @@ def eliminar_usuario(request, pk):
     u.save()
     return redirect('usuario_listar')
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'lista_clientes.html', {'clientes': clientes})
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def crear_cliente(request, user_id):
     perfil = get_object_or_404(UserProfile, pk=user_id)
 
@@ -124,12 +129,14 @@ def crear_cliente(request, user_id):
         form = ClienteForm()
     return render(request, 'crear_cliente.html', {'ClienteForm': form, 'perfil': perfil})
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def elegir_usuario_para_cliente(request):
     ids_usados = Cliente.objects.values_list('usuario', flat=True)
     perfiles = UserProfile.objects.exclude(id__in=ids_usados)
 
     return render(request, 'elegir_usuario.html', {'perfiles': perfiles})
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def editar_cliente(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
     if request.method == 'POST':
@@ -142,6 +149,7 @@ def editar_cliente(request, pk):
     perfil = cliente.usuario
     return render(request, 'crear_cliente.html', {'ClienteForm': form, 'cliente': cliente, 'es_edicion': True, 'perfil': perfil})
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def eliminar_cliente(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
     if request.method == 'POST':
@@ -149,12 +157,14 @@ def eliminar_cliente(request, pk):
         return redirect('cliente_listar')
     return render(request, 'eliminar_cliente.html', {'cliente': cliente})
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def lista_membresias(request):
     contexto = {
         'membresias': Membresia.objects.all()
     }
     return render(request, 'lista_membresias.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def crear_membresia(request, cliente):
     cliente_obj = get_object_or_404(Cliente, id=cliente)
 
@@ -177,6 +187,7 @@ def crear_membresia(request, cliente):
 
     return render(request, 'crear_membresia.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def elegir_cliente_para_membresia(request):
     ids_usados = Membresia.objects.values_list('cliente', flat=True)
     clientes = Cliente.objects.exclude(id__in=ids_usados)
@@ -186,6 +197,7 @@ def elegir_cliente_para_membresia(request):
     }
     return render(request, 'elegir_cliente.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def editar_membresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
     c = Cliente.objects.get(id=m.cliente.id)
@@ -206,17 +218,20 @@ def editar_membresia(request, pk):
     }
     return render(request, 'crear_membresia.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def eliminar_membresia(request, pk):
     m = get_object_or_404(Membresia, pk=pk)
     m.delete()
     return redirect('membresia_listar')
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def lista_asistencias(request):
     contexto = {
         'asistencias': Asistencia.objects.all()
     }
     return render(request, 'lista_asistencias.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def elegir_cliente_para_asistencia(request):
     clientes = Cliente.objects.all()
     contexto = {
@@ -225,6 +240,7 @@ def elegir_cliente_para_asistencia(request):
     }
     return render(request, 'elegir_cliente.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def crear_asistencia(request, cliente):
     c = Cliente.objects.get(id=cliente)
     if request.method == 'POST':
@@ -244,6 +260,7 @@ def crear_asistencia(request, cliente):
     }
     return render(request, 'crear_asistencia.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def editar_asistencia(request, pk):
     a = get_object_or_404(Asistencia, pk=pk)
     if request.method == 'POST':
@@ -263,22 +280,25 @@ def editar_asistencia(request, pk):
     }
     return render(request, 'crear_asistencia.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def eliminar_asistencia(request, pk):
     a = get_object_or_404(Asistencia, pk=pk)
     a.delete()
     return redirect('asistencia_listar')
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def lista_cobranzas(request):
     contexto = {
         'cobranzas': Cobranza.objects.all()
     }
     return render(request, 'lista_cobranzas.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def elegir_membresia_para_cobranza(request):
     membresias = Membresia.objects.all()
     return render(request, 'elegir_membresia.html', {'membresias': membresias})
 
-
+@staff_member_required(login_url='/permisos_insuficientes/')
 def crear_cobranza(request, membresia):
     m = get_object_or_404(Membresia, id=membresia)
     if request.method == 'POST':
@@ -299,6 +319,7 @@ def crear_cobranza(request, membresia):
     }
     return render(request, 'crear_cobranza.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def editar_cobranza(request, pk):
     c = get_object_or_404(Cobranza, pk=pk)
     m = get_object_or_404(Membresia, id=c.membresia.id)
@@ -320,6 +341,7 @@ def editar_cobranza(request, pk):
     }
     return render(request, 'crear_cobranza.html', contexto)
 
+@staff_member_required(login_url='/permisos_insuficientes/')
 def eliminar_cobranza(request, pk):
     a = get_object_or_404(Cobranza, pk=pk)
     a.delete()

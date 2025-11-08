@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Permisos Insuficientes{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Secciones de altura completa */
+    section {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        scroll-behavior: smooth;
+    }
+
+    /* Botón flotante */
+    #btn-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    /* Cambia color de bordes */
+    .input-login {
+        border-color: #000000; /* borde negro */
+    }
+
+    /* Cambia color de borde en foco */
+    .input-login:focus {
+        border-color: #1111ee; /* azul en foco */
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 255, 0.25); /* sombreado en foco */
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="col-md-6 mb-4 mx-auto text-center">
+
+    <br><br>
+    <h1>Faltan permisos</h1>
+    <br><br>
+    <div class="bg-white rounded text-center text-dark p-4 col-md-7 mx-auto">
+            <br>
+            {% if request.user.is_authenticated %}
+                <h5>El usuario con el que intento ingresar no tiene acceso a esta pagina.</h5>
+                <br><br><br>
+                <a href="{% url 'logout' %}" class="btn btn-primary">Cerrar Sesion</a>
+            {% else %}
+                <h5>Necesita iniciar sesion con una cuenta que tenga acceso a esta pagina.</h5>
+                <br><br><br>
+                <a href="{% url 'login' %}" class="btn btn-primary">Ir a login</a>
+            {% endif %}
+
+    </div>
+</div>
+
+
+
+
+<!-- Botón volver arriba -->
+<a id="btn-top" href="#banner" class="btn btn-danger btn-lg rounded-circle">
+    <i class="bi bi-arrow-up"></i>
+</a>
+
+
+{% endblock %}

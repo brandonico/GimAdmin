@@ -30,36 +30,6 @@
                 <div class="mostrarDatos col-md-4">
                     <h2>Usuarios</h2>
                     <ul>
-                        {% for usuario in usuarios %}
-                            <li>
-                                {{ usuario.user_id.first_name }} {{ usuario.user_id.last_name }}
-                                (DNI: {{ usuario.dni }})
-                                {% if usuario.telefono %} - Teléfono: {{ usuario.telefono }}{% endif %}
-                                {% if usuario.domicilio %} - Domicilio: {{ usuario.domicilio }}{% endif %}
-                            </li>
-                        {% empty %}
-                            <li>No hay usuarios.</li>
-                        {% endfor %}
-                    </ul>
-
-                    <h2>Clientes</h2>
-                    <ul>
-                        {% for cliente in clientes %}
-                            <li> {{ cliente.usuario.dni }} - Edad: {{ cliente.edad }} a&ntilde;os, Altura: {{ cliente.altura }} cm, Peso: {{ cliente.peso }} kg</li>
-                        {% empty %}
-                            <li>No hay clientes.</li>
-                        {% endfor %}
-                    </ul>
-
-                    <h2>Membresías</h2>
-                    <ul>
-                        {% for membresia in membresias %}
-                            <li>{{ membresia.cliente.usuario.nombre }} {{ membresia.cliente.usuario.dni }}: {{ membresia.fechaInicio }} a {{ membresia.fechaFin }} (Monto: {{ membresia.monto }})</li>
-                        {% empty %}
-                            <li>No hay membresías.</li>
-                        {% endfor %}
-                    </ul>  
-                </div>
                 
             {% comment %}
                 <div>

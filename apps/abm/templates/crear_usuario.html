@@ -35,6 +35,7 @@
                     {{ userForm.email }}
                     </p>
                     <p>
+                    {% if user.is_superuser %}
                         <br>
                         <label for="id_is_staff">Es staff:</label>
                             {{ userForm.is_staff }}
@@ -43,6 +44,7 @@
                         <label for="id_is_superuser">Es administrador:</label>
                             {{ userForm.is_superuser }}
                         <br>
+                    {% endif %}
                         {% if es_edicion %}
                         <br>
                             <label for="id_is_active">Está activo:</label>

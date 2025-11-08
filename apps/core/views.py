@@ -108,11 +108,12 @@ def cambiar_password_primera_vez(request):
 
     return render(request, 'first_login.html')
 
+@login_required
 def logoutView(request):
     logout(request)
     return redirect('home')
 
-
+@login_required
 def dashboard(request):
     contexto = {
         'user' : request.user
@@ -160,8 +161,6 @@ def recuperar_contraseña(request):
             mensaje = "No existe un usuario con ese correo."
 
     return render(request, "recuperar_contraseña.html", {"mensaje": mensaje})
-    # 🔹 Contexto normal para el dashboard
-    contexto = {
-        'user': request.user
-    }
-    return render(request, 'dashboard.html', contexto)
+
+def permisos_insuficientes(request):
+    return render(request, "permisos_insuficientes.html", {"mensaje" : 'mensaje'})
