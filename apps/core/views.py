@@ -8,11 +8,12 @@ from django.http import HttpResponse
 #importar authenticate
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 
 #importar modelos
-from .forms import CrearAsistenciaForm
-from apps.abm.models import Cliente, UserProfile, Asistencia
+from .forms import CrearAsistenciaForm, ActualizarMembresiaForm
+from apps.abm.models import Cliente, UserProfile, Asistencia, Membresia, Cobranza
 
 #importar tiempo para asistencia
 from django.utils import timezone
@@ -22,6 +23,9 @@ from datetime import timedelta
 from apps.core.utils import enviar_correo
 from django.contrib.auth.models import User
 import random, string
+
+#importar conf
+from django.conf import settings
 
 def home(request):
     form = CrearAsistenciaForm()
@@ -53,7 +57,7 @@ def home(request):
                 #cambiar capacidad dependiendo
         
     contexto = {
-        'cantidad': Asistencia.objects.count(),
+        'cantidad': Asistencia.objects.count(),#Filtrar las ultimas 2 horas de asistencias
         'form': form
     }
     return render(request, 'home.html', contexto)
@@ -115,9 +119,40 @@ def logoutView(request):
 
 @login_required
 def dashboard(request):
+    nuevaCobranza = None
+    usuario = request.user
     contexto = {
-        'user' : request.user
+        'user' : usuario,
     }
+    if usuario.is_staff:
+        miembrosAdeudados = list(Membresia.objects.filter(estado='Adeuda'))
+        cobranzas = []
+        for miembro in miembrosAdeudados:
+            nuevaCobranza = Cobranza(
+                membresia=miembro,
+                importe=settings.PRECIO_MES_SUSCRIPCION,
+                fecha_pago='A Decidir',
+                metodo_pago='A decidir'
+                )
+            setattr(nuevaCobranza, "a_pagar", "true")
+            cobranzas.append(nuevaCobranza)
+        contexto['cobranzas'] = cobranzas
+        return render (request, 'dashboard.html', contexto)
+    else:
+        membresia = usuario.user_usuario.cliente_usuario.membresia_cliente
+        contexto['membresia'] = membresia
+        cobranzas = Cobranza.objects.filter(membresia=membresia)
+        contexto['cobranzas'] = list(cobranzas)
+        if membresia.estado == 'Adeuda':
+            nuevaCobranza = Cobranza(
+                membresia=membresia,
+                importe=settings.PRECIO_MES_SUSCRIPCION,
+                fecha_pago='A Decidir',
+                metodo_pago= 'A decidir'
+                )
+            setattr(nuevaCobranza, "a_pagar", "true")
+            if nuevaCobranza:
+                contexto['cobranzas'].append(nuevaCobranza)
     return render(request, 'dashboard.html', contexto)
 """"
 @login_required
@@ -126,6 +161,8 @@ def dashboard(request):
     if request.user.userprofile.first_login:
         return redirect('cambiar_password_primera_vez')
         """
+
+
 
 #implementacion de correos
 
@@ -164,3 +201,24 @@ def recuperar_contraseña(request):
 
 def permisos_insuficientes(request):
     return render(request, "permisos_insuficientes.html", {"mensaje" : 'mensaje'})
+
+@staff_member_required(login_url='/permisos_insuficientes/')
+def actualizar_membresia (request, pk):
+    form = ActualizarMembresiaForm()
+    membresia = Membresia.objects.get(id=pk)
+    contexto = {
+        'form' : form,
+        'membresia': membresia,
+    }
+
+
+
+    render (request, 'actualizar_membresia.html', contexto)
+    pass
+
+@staff_member_required(login_url='/permisos_insuficientes/')
+def baja_membresia (request, pk):
+    membresia = Membresia.objects.get(id=pk)
+    membresia.estado='Baja'
+    membresia.save
+    return redirect('dashboard')

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=False, on_delete=models.CASCADE, related_name='user_usuario')
     dni = models.IntegerField(unique=True, null=False)
     telefono = models.CharField(max_length=50)
     domicilio = models.CharField(max_length=150)

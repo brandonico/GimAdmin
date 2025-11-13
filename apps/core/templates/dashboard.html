@@ -4,41 +4,129 @@
 
 {% block extra_css %}
     <style>
+    
     .principal {
         background-color: #091b3a;
-    };
+        min-height: 80vh;
+    }
+
     .boton-relativo {
         background-color: lightblue;
-    };
+    }
+
+    .membresia-div {
+        {% if membresia.estado == 'Activa' %}
+            background-color: #06bb00;
+            color: #000000;
+        {% elif membresia.estado == 'Adeuda' %}
+            background-color: #e2e600;
+            color: #000000;
+        {% else %}
+            background-color: #b90000;
+        {% endif %}
+    }
+
+    .porcion-memdiv {
+        height:33%;
+        align-items: center;
+    }
     </style>
 {% endblock %}
 
 {% block content %}
 {% load static %}
-<main class="d-flex flex-nowrap">
-    <div class="flex container-fluid m-4 rounded principal position-relative">
+<main class="d-flex flex-nowrap ">
+    <div class="d-flex container-fluid m-2 flex-column rounded principal position-relative py-3">
         <h1>Bienvenido!  {{user.first_name}}</h1>
         <h2> {{ mensaje }}</h2>
         <br>
         <div class="boton-relativo position-absolute top-0 end-0 m-1">
             <a href="{% url 'cambiar_password_primera_vez' %}" class="btn-secondary btn">Cambiar Contraseña</a>
         </div>
-        {% if user.is_staff %}
-
-        <section class="">
-            <div class="row">
-                <div class="mostrarDatos col-md-4">
-                    <h2>Usuarios</h2>
-                    <ul>
-                
-            {% comment %}
-                <div>
-                    <img src="{% static '/images/images.jpeg' %}">
+        {% if request.user.is_staff %}
+            <div>
+                <table class="table table-bordered table-hover align-middle" {% if cobranzas %}id="tablaCobranzas"{% endif %} >   <!--tabla principal-->
+            <thead class="table-dark bg-gradient">
+                <tr>
+                    <th>Email de cliente</th>
+                    <th>Importe</th>
+                    <th>Fecha de vencimiento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cobranza in cobranzas %}
+                <tr>
+                    <td>{{ cobranza.membresia.cliente.usuario.user.username }}</td>
+                    <td>{{ cobranza.importe }}</td>
+                    <td>{{ cobranza.membresia.fecha_fin }}</td>
+                    <td>
+                        <!-- botones -->
+                        <a href="{% url 'actualizar_membresia' pk=cobranza.membresia.id %}">
+                        <button type="button" class="btn btn-sm btn-primary mb-1" href="">Actualizar</button></a>
+                        <a href="{% url 'baja_membresia' pk=cobranza.membresia.id %}">
+                        <button type="button" class="btn btn-sm btn-danger mb-1">Dar de baja</button></a>
+                    </td>
+                </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No hay cobranzas registradas.</td>
+                    </tr>
+                {% endfor %}
+        </tbody>
+        </table>
+            </div>
+        {% else %}
+        <div class="row flex-grow-1">
+            <div class="col-md-4 d-flex flex-column flex-grow-1">
+                <div class="rounded text-center flex-grow-1 membresia-div d-flex flex-column justify-content-evenly align-items-center">
+                    <div>
+                        Estado de la membresia: <br><h4>{{ membresia.estado }}</h5>
+                    </div>
+                    <div>
+                        Ultima fecha de inicio: <br><h5>{{membresia.fecha_inicio}}</h6>
+                    </div>
+                    <div>
+                        Ultima fecha de vencimiento: <br><h5>{{membresia.fecha_fin}}</h6>
+                    </div>
                 </div>
-            {% endcomment %}
-        </section>
-        
-        
+            </div>
+            <div class="col-md-8">
+                <table class="table table-bordered table-hover align-middle" {% if cobranzas %}id="tablaCobranzas"{% endif %} >   <!--tabla principal-->
+                    <thead class="table-dark bg-gradient">
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha de pago</th>
+                            <th>Importe</th>
+                            <th>Metodo de pago</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cobranza in cobranzas %}
+                        <tr>
+                            <td>
+                                {{ cobranza.membresia.cliente.usuario.user.first_name }} 
+                                {{ cobranza.membresia.cliente.usuario.user.last_name }}
+                            </td>
+                            {% if not cobranza.a_pagar %}
+                                <td>{{ cobranza.fecha_pago }}</td>
+                                <td>{{ cobranza.importe }}</td>
+                                <td>{{ cobranza.metodo_pago }}</td>
+                            {% else %}
+                                <td style="color: #ff0000">A determinar</td>
+                                <td style="color: #ff0000">{{cobranza.importe}}</td>
+                                <td style="color: #ff0000">A determinar</td>
+                            {%endif%}
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No hay cobranzas registradas.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
         {% endif %}
     </div>
 </main>

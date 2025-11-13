@@ -139,3 +139,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'oxigeno.caf.rw@gmail.com'
 EMAIL_HOST_PASSWORD = 'dgis bqfx gvaq zkak'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Precio suscripcion
+PRECIO_MES_SUSCRIPCION = 30000
+
+# URL LOGIN POR DEFECTO
+LOGIN_URL = 'login'
