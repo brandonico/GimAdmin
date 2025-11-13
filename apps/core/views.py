@@ -27,6 +27,9 @@ import random, string
 #importar conf
 from django.conf import settings
 
+#idk
+from django.core.exceptions import ObjectDoesNotExist
+
 def home(request):
     form = CrearAsistenciaForm()
     if request.method == 'POST':
@@ -62,6 +65,15 @@ def home(request):
     }
     return render(request, 'home.html', contexto)
 
+
+def proteger_login(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@proteger_login
 def loginView(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -83,8 +95,7 @@ def loginView(request):
             }
             return render(request, 'login.html', contexto)
         
-    contexto = {
-    }
+    contexto = {}
     
     return render(request, 'login.html', contexto)
 
@@ -139,20 +150,41 @@ def dashboard(request):
         contexto['cobranzas'] = cobranzas
         return render (request, 'dashboard.html', contexto)
     else:
-        membresia = usuario.user_usuario.cliente_usuario.membresia_cliente
-        contexto['membresia'] = membresia
-        cobranzas = Cobranza.objects.filter(membresia=membresia)
-        contexto['cobranzas'] = list(cobranzas)
-        if membresia.estado == 'Adeuda':
-            nuevaCobranza = Cobranza(
-                membresia=membresia,
-                importe=settings.PRECIO_MES_SUSCRIPCION,
-                fecha_pago='A Decidir',
-                metodo_pago= 'A decidir'
-                )
-            setattr(nuevaCobranza, "a_pagar", "true")
-            if nuevaCobranza:
-                contexto['cobranzas'].append(nuevaCobranza)
+        try:
+            membresia = usuario.user_usuario.cliente_usuario.membresia_cliente
+            contexto['membresia'] = membresia
+            cobranzas = Cobranza.objects.filter(membresia=membresia)
+            contexto['cobranzas'] = list(cobranzas)
+            if membresia.estado == 'Adeuda':
+                nuevaCobranza = Cobranza(
+                    membresia=membresia,
+                    importe=settings.PRECIO_MES_SUSCRIPCION,
+                    fecha_pago='A Decidir',
+                    metodo_pago= 'A Decidir'
+                    )
+                setattr(nuevaCobranza, "a_pagar", "true")
+                if nuevaCobranza:
+                    contexto['cobranzas'].append(nuevaCobranza)
+
+        except ObjectDoesNotExist:
+            mensaje ='Cliente o Membresia no validas.'
+            contexto = {
+                'mensaje' : mensaje,
+            }
+
+            enviar_correo(
+                asunto="Error - Login sin cliente/membresia",
+                destinatario=settings.EMAIL_HOST_USER,
+                contexto="Un usuario tiene problemas para iniciar sesion por no figurar en las listas de clientes o membresia.\n"
+                "\nApellido y Nombre: " + usuario.last_name + " " + usuario.first_name + 
+                "\nEmail: " + usuario.email + 
+                "\nDNI: " + str(usuario.user_usuario.dni),
+                plantilla_html=""
+            )
+            
+            logout(request)
+            return render(request, 'login.html', contexto)
+
     return render(request, 'dashboard.html', contexto)
 """"
 @login_required
