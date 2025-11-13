@@ -99,8 +99,8 @@ def cambiar_password_primera_vez(request):
             user.set_password(new_password)
             user.save()
             
-            user.userprofile.first_login = False
-            user.userprofile.save()
+            user.user_usuario.first_login = False
+            user.user_usuario.save()
 
             update_session_auth_hash(request, user)
 
@@ -191,8 +191,6 @@ def recuperar_contraseña(request):
                 contexto=str(contexto),
                 plantilla_html="emails/recuperar.html"
             )
-            
-        
             mensaje = "Se ha enviado una nueva contraseña a tu correo."
         except User.DoesNotExist:
             mensaje = "No existe un usuario con ese correo."
@@ -210,15 +208,32 @@ def actualizar_membresia (request, pk):
         'form' : form,
         'membresia': membresia,
     }
+    if request.method == "POST":
+        form = ActualizarMembresiaForm(request.POST)
+        if form.is_valid():
+            membresia.fecha_inicio = form.cleaned_data['fecha_inicio']
+            membresia.fecha_fin = form.cleaned_data['fecha_fin']
+            membresia.estado = form.cleaned_data['estado']
+            membresia.save()
 
-
-
-    render (request, 'actualizar_membresia.html', contexto)
-    pass
+            cobranza = Cobranza.objects.create( membresia=membresia,
+                                                importe=form.cleaned_data['importe'],
+                                                metodo_pago=form.cleaned_data['metodo_pago']
+                                                )
+            cuerpo= "Usted ha abonado otro plazo con Oxigeno: \nPlazo: "+membresia.fecha_inicio.strftime("%d/%m/%Y") +" a "+ membresia.fecha_fin.strftime("%d/%m/%Y")+"\nImporte: $"+str(cobranza.importe)+"\nMetodo de pago: "+cobranza.metodo_pago
+            enviar_correo(
+                asunto="Muchas Gracias",
+                destinatario=membresia.cliente.usuario.user.email,
+                contexto=cuerpo,
+                plantilla_html=""
+            )
+            return redirect('dashboard')
+            
+    return render (request, 'actualizar_membresia.html', contexto)
 
 @staff_member_required(login_url='/permisos_insuficientes/')
 def baja_membresia (request, pk):
     membresia = Membresia.objects.get(id=pk)
     membresia.estado='Baja'
-    membresia.save
+    membresia.save()
     return redirect('dashboard')

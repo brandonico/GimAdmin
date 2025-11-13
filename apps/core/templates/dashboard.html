@@ -37,7 +37,11 @@
 {% load static %}
 <main class="d-flex flex-nowrap ">
     <div class="d-flex container-fluid m-2 flex-column rounded principal position-relative py-3">
+        {% if request.user.is_staff %}
+        <h4>Lista de Miembros en estado de deuda.</h4>
+        {% else %}
         <h1>Bienvenido!  {{user.first_name}}</h1>
+        {% endif %}
         <h2> {{ mensaje }}</h2>
         <br>
         <div class="boton-relativo position-absolute top-0 end-0 m-1">
