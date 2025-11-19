@@ -78,7 +78,7 @@
             {% csrf_token %}
             <div class="input-group">
                 {{ form.dni }}
-                <button class="btn btn-primary" type="submit">
+                <button class="btn btn-primary" id="btn_registro" type="submit">
                 Registrar
                 </button>
             </div>
@@ -87,14 +87,42 @@
 </section>
 
 <!-- Sección Ocupación -->
+ 
 {% if cantidad > 12 %}
-<section id="ocupacion" class="bg-danger rounded .container-fluid">
+<section id="ocupacion" class="rounded .container-fluid">
     {% else %}
-<section id="ocupacion" class="bg-success rounded .container-fluid">
+<section id="ocupacion" class="rounded .container-fluid">
     {% endif %}
 
     <h3>Ocupación:</h3>
-    <h1>{{cantidad}}</h1>
+    <h1 id="cantidadClientes"></h1>
+    <script>
+    // Función que hace el fetch y actualiza la interfaz
+    function actualizarAsistencia() {
+        fetch("actualizar_asistencia")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("cantidadClientes").innerText = data.cantidad;
+
+                if (data.color) {
+                    document.getElementById("ocupacion").style.backgroundColor = data.color;
+                }
+            })
+            .catch(err => console.error("Error al actualizar asistencia:", err));
+    }
+        document.addEventListener("DOMContentLoaded", () => {
+            actualizarAsistencia();
+        }); //cuando carga
+
+        //Cada 2 minutos
+        setInterval(actualizarAsistencia, 120000);
+
+        //Cuando se presione el btn_registro (carga de asistencia)
+        document.getElementById("btn_registro").addEventListener("click", () => {
+            actualizarAsistencia();
+        });
+
+    </script>
 </section>
 
 

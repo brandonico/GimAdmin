@@ -10,5 +10,6 @@ urlpatterns = [
     path('cambiar_password/', views.cambiar_password_primera_vez, name='cambiar_password_primera_vez'),
     path('permisos_insuficientes/', views.permisos_insuficientes, name="permisos_insuficientes"),
     path('baja_membresia/<int:pk>', views.baja_membresia, name='baja_membresia'),
-    path('actualizar_membresia/<int:pk>', views.actualizar_membresia, name='actualizar_membresia')
+    path('actualizar_membresia/<int:pk>', views.actualizar_membresia, name='actualizar_membresia'),
+    path('actualizar_asistencia/', views.actualizar_asistencia, name='actualizar_asistencia')
 ]

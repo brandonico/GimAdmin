@@ -4,6 +4,7 @@ from django.views import View
 
 #vista basada en funciones 
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 #importar authenticate
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -52,7 +53,7 @@ def home(request):
             else:
                 c = Cliente.objects.get(usuario=usuario)
                 entrada = timezone.now()
-                salida = entrada + timedelta(hours=1)
+                salida = entrada + timedelta(hours=2)
                 Asistencia.objects.create(cliente=c,
                                           hora_entrada=entrada,
                                           hora_salida=salida,
@@ -269,3 +270,25 @@ def baja_membresia (request, pk):
     membresia.estado='Baja'
     membresia.save()
     return redirect('dashboard')
+
+def actualizar_asistencia (request):
+    cuenta = Asistencia.objects.filter(
+            fecha_clase=timezone.localtime().date(),
+            hora_salida__gt= timezone.localtime().time()
+            ).count()       #Filtra las ultimas 2 horas de asistencias
+                            #tiene en cuenta fecha y hora. __gt = mayor que
+    if (cuenta <= settings.LIMITE_ASISTENCIA_BAJO):
+        color = '#5bc0de';
+    elif (cuenta <= settings.LIMITE_ASISTENCIA_MEDIO):
+        color = '#22bb33';
+    elif (cuenta <= settings.LIMITE_ASISTENCIA_ALTO):
+        color = '#f0ad4e';
+    else:
+        color = '#bb2124'
+    
+    datos = {
+        'cantidad': cuenta,
+        'color' : color
+    }                   
+
+    return JsonResponse(datos)
