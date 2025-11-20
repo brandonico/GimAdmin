@@ -64,25 +64,18 @@
     </div>
 
     <!-- Formulario de registro de visita -->
-     {% if mensaje %}
-    <div class="alert alert-danger d-flex align-items-center" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-        <div>
-            {{mensaje}}
-        </div>
+    <div class="alert alert-danger d-flex align-items-center" role="alert" id="div_visible" >
+        <!--<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>-->
+        <div id="div_error"></div>
     </div>
-    {% endif %}
     <div class="card shadow-sm border-0 rounded-3 w-50 mx-auto p-4 " style="background-color: #355B9C; color: #f8f9fa;">
         <h5 class="mb-3">Registrar visita</h5>
-        <form method="post" action="#">
-            {% csrf_token %}
-            <div class="input-group">
-                {{ form.dni }}
-                <button class="btn btn-primary" id="btn_registro" type="submit">
-                Registrar
-                </button>
-            </div>
-        </form>
+        <div class="input-group">
+            <input type="number" name="dni" value="" class="form-control" step="1" id="id_dni">
+            <button class="btn btn-primary" id="btn_registro">
+            Registrar
+            </button>
+        </div>
     </div>
 </section>
 
@@ -97,28 +90,52 @@
     <h3>Ocupación:</h3>
     <h1 id="cantidadClientes"></h1>
     <script>
-    // Función que hace el fetch y actualiza la interfaz
-    function actualizarAsistencia() {
-        fetch("actualizar_asistencia")
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("cantidadClientes").innerText = data.cantidad;
-
-                if (data.color) {
+        // Función que hace el fetch y actualiza la interfaz
+        function actualizarAsistencia() {
+            fetch("actualizar_asistencia")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("cantidadClientes").innerText = data.cantidad;
                     document.getElementById("ocupacion").style.backgroundColor = data.color;
-                }
-            })
-            .catch(err => console.error("Error al actualizar asistencia:", err));
-    }
+                    
+                })
+                .catch(err => console.error("Error al actualizar asistencia:", err));
+        }
+
+        function crearAsistencia(){
+            let dni = document.getElementById("id_dni").value
+
+
+            fetch("crear_asistencia/?dni=" + dni)
+                .then(response => response.json())
+                .then(data => {
+                    const divError = document.getElementById("div_error");
+                    const divVisible = document.getElementById("div_visible");
+
+                    //divVisible.classList.toggle("d-none", data.mensaje && data.mensaje.trim() !== ""); 
+                    if (data.mensaje && data.mensaje.trim() !== "") {
+                        divVisible.classList.remove("d-none");
+                        divError.innerText = data.mensaje;
+                    } else {
+                        divVisible.classList.add("d-none");
+                        divError.innerText = "";
+                    }
+                })
+                .catch(err => console.error("Error al actualizar asistencia:", err));
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            const divVisible = document.getElementById("div_visible");
+            divVisible.classList.add("d-none");
             actualizarAsistencia();
         }); //cuando carga
 
         //Cada 2 minutos
-        setInterval(actualizarAsistencia, 120000);
+        setInterval(actualizarAsistencia, 2000); //1k = 1seg
 
         //Cuando se presione el btn_registro (carga de asistencia)
         document.getElementById("btn_registro").addEventListener("click", () => {
+            crearAsistencia();
             actualizarAsistencia();
         });
 

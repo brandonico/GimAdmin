@@ -43,6 +43,19 @@ def home(request):
             except UserProfile.DoesNotExist:
                 usuario = None
                 
+            else:
+                try :
+                    c = Cliente.objects.get(usuario=usuario)
+                    entrada = timezone.now()
+                    salida = entrada + timedelta(hours=2)
+                    Asistencia.objects.create(cliente=c,
+                                              hora_entrada=entrada,
+                                              hora_salida=salida,
+                                              capacidad=100)
+                    #cambiar capacidad dependiendo
+                except Cliente.DoesNotExist:
+                    usuario = None
+
             if not usuario:
                 contexto = {
                     'mensaje': 'El usuario no está registrado en la base.',
@@ -50,18 +63,8 @@ def home(request):
                     'form' : form,
                 }
                 return render(request, 'home.html', contexto)
-            else:
-                c = Cliente.objects.get(usuario=usuario)
-                entrada = timezone.now()
-                salida = entrada + timedelta(hours=2)
-                Asistencia.objects.create(cliente=c,
-                                          hora_entrada=entrada,
-                                          hora_salida=salida,
-                                          capacidad=100)
-                #cambiar capacidad dependiendo
         
     contexto = {
-        'cantidad': Asistencia.objects.count(),#Filtrar las ultimas 2 horas de asistencias
         'form': form
     }
     return render(request, 'home.html', contexto)
@@ -277,9 +280,7 @@ def actualizar_asistencia (request):
             hora_salida__gt= timezone.localtime().time()
             ).count()       #Filtra las ultimas 2 horas de asistencias
                             #tiene en cuenta fecha y hora. __gt = mayor que
-    if (cuenta <= settings.LIMITE_ASISTENCIA_BAJO):
-        color = '#5bc0de';
-    elif (cuenta <= settings.LIMITE_ASISTENCIA_MEDIO):
+    if (cuenta <= settings.LIMITE_ASISTENCIA_MEDIO):
         color = '#22bb33';
     elif (cuenta <= settings.LIMITE_ASISTENCIA_ALTO):
         color = '#f0ad4e';
@@ -292,3 +293,35 @@ def actualizar_asistencia (request):
     }                   
 
     return JsonResponse(datos)
+
+def crear_asistencia(request):
+    dni = request.GET.get("dni", "")
+
+    try :
+        usuario = UserProfile.objects.get(dni=dni)
+    except UserProfile.DoesNotExist:
+        usuario = None
+        
+    try :
+        c = Cliente.objects.get(usuario=usuario)
+        entrada = timezone.now()
+        salida = entrada + timedelta(hours=2)
+        Asistencia.objects.create(cliente=c,
+                                    hora_entrada=entrada,
+                                    hora_salida=salida,
+                                    capacidad=100)
+        #cambiar capacidad dependiendo
+    except Cliente.DoesNotExist:
+        c = None
+
+    contexto = {"mensaje":""}
+
+    if not usuario:
+        contexto = {
+            'mensaje': 'El usuario no está registrado en la base.',
+        }
+    elif not c:
+        contexto = {
+            'mensaje':'El usuario no es un cliente registrado'
+        }
+    return JsonResponse(contexto)
