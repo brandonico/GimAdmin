@@ -276,8 +276,8 @@ def baja_membresia (request, pk):
 
 def actualizar_asistencia (request):
     cuenta = Asistencia.objects.filter(
-            fecha_clase=timezone.localtime().date(),
-            hora_salida__gt= timezone.localtime().time()
+            fecha_clase=timezone.now().date(),
+            hora_salida__gt= timezone.now().time()
             ).count()       #Filtra las ultimas 2 horas de asistencias
                             #tiene en cuenta fecha y hora. __gt = mayor que
     if (cuenta <= settings.LIMITE_ASISTENCIA_MEDIO):
