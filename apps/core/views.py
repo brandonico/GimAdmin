@@ -252,7 +252,7 @@ def recuperar_contraseña(request):
                 asunto="Recuperación de contraseña",
                 destinatario=email,
                 contexto=str(contexto),
-                plantilla_html="emails/recuperar.html"
+                plantilla_html=""
             )
             exito = True
             mensaje = "Se ha enviado una nueva contraseña a tu correo."

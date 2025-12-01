@@ -63,6 +63,7 @@
         <img src="{% static '/images/logo_transparente.png' %}" width="500">
     </div>
 
+    {% if user.is_staff %}
     <!-- Formulario de registro de visita -->
     <div class="alert alert-danger d-flex align-items-center" role="alert" id="div_visible" >
         <!--<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>-->
@@ -77,6 +78,7 @@
             </button>
         </div>
     </div>
+    {% endif %}
 </section>
 
 <!-- Sección Ocupación -->
@@ -195,7 +197,7 @@
 </a>
 
 {% endblock %}
-
+<!--
 {% block extra_js %}
 <script>
     // Scroll suave para links del navbar
@@ -207,4 +209,4 @@
         });
     });
 </script>
-{% endblock %}
+{% endblock %}-->

@@ -41,10 +41,13 @@
     {% if mensaje %}
         {% if exito %}
             <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>AVISO: </strong> {{mensaje}}
+
         {% else %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>ERROR: </strong> {{mensaje}}
         {% endif %}
-    <strong>ERROR!</strong> {{mensaje}}
+    
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endif %}
