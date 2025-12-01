@@ -28,7 +28,7 @@ import random, string
 #importar conf
 from django.conf import settings
 
-#idk
+#exepciones
 from django.core.exceptions import ObjectDoesNotExist
 
 def home(request):
@@ -87,11 +87,19 @@ def loginView(request):
 
         if user is not None : 
             login(request, user)
+            try:
+                profile = UserProfile.objects.get(user=user)
+                if profile.first_login:
+                    return redirect('cambiar_password_primera_vez')
+                return redirect('dashboard')
             
-            profile = UserProfile.objects.get(user=user)
-            if profile.first_login:
-                return redirect('cambiar_password_primera_vez')
-            return redirect('dashboard')
+            except UserProfile.DoesNotExist:
+                mensaje = 'No existe un perfil de usuario asociado.'
+                contexto = {
+                    'mensaje': mensaje,
+                }
+                logout(request)
+                return render(request, 'login.html', contexto)
         else :
             mensaje ='Usuario y/o contraseña invalido.'
             contexto = {
