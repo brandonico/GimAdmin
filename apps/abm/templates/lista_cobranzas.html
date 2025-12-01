@@ -31,6 +31,8 @@
             <thead class="table-dark bg-gradient">
                 <tr>
                     <th>Email de cliente</th>
+                    <th>Nombre del cliente</th>
+                    <th>DNI del cliente</th>
                     <th>Fecha de pago</th>
                     <th>Importe</th>
                     <th>Metodo de pago</th>
@@ -41,6 +43,8 @@
                 {% for cobranza in cobranzas %}
                 <tr>
                     <td>{{ cobranza.membresia.cliente.usuario.user.username }}</td>
+                    <td>{{ cobranza.membresia.cliente.usuario.user.last_name }} {{ cobranza.membresia.cliente.usuario.user.first_name }}</td>
+                    <td>{{ cobranza.membresia.cliente.usuario.dni }}</td>
                     <td>{{ cobranza.fecha_pago }}</td>
                     <td>{{ cobranza.importe }}</td>
                     <td>{{ cobranza.metodo_pago }}</td>

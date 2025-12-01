@@ -32,10 +32,8 @@
                 <tr>
                     <th>Email</th>
                     <th>Fecha de la clase</th>
-                    <th>Asistencia</th>
                     <th>Hora de entrada</th>
                     <th>Hora de salida</th>
-                    <th>Capacidad</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -44,10 +42,8 @@
                 <tr>
                     <td>{{ asistencia.cliente.usuario.user.username }}</td>
                     <td>{{ asistencia.fecha_clase }}</td>
-                    <td>{{ asistencia.asistencia }}</td>
                     <td>{{ asistencia.hora_entrada }}</td>
                     <td>{{ asistencia.hora_salida }}</td>
-                    <td>{{ asistencia.capacidad }}</td>
                     <td>
                         <!-- botones -->
                         <a href="{% url 'asistencia_editar' pk=asistencia.id %}">

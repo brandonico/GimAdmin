@@ -120,6 +120,7 @@
                         divVisible.classList.add("d-none");
                         divError.innerText = "";
                     }
+                    document.getElementById("id_dni").value = "";
                 })
                 .catch(err => console.error("Error al actualizar asistencia:", err));
         }
@@ -139,6 +140,13 @@
             actualizarAsistencia();
         });
 
+        document.getElementById("id_dni").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                document.getElementById("btn_registro").click();
+            }
+        });
+
     </script>
 </section>
 
@@ -146,7 +154,7 @@
 <!-- Sección Contacto -->
 <section id="contacto">
     <div class="container text-dark">
-        <div class="row">
+         <div class="row">
             <!-- Formulario -->
             <div class="col-md-6 mb-4">
                 <h2>Contáctanos</h2>
@@ -172,8 +180,8 @@
                 <h2>Ubicación</h2>
                 <div class="ratio ratio-16x9">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d467.0422648668132!2d-65.102121!3d-43.299837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9616f0b9b6c40715%3A0x58bdf019a9b3e3a2!2s25%20de%20Mayo%20550%2C%20Rawson%2C%20Chubut!5e0!3m2!1ses-419!2sar!4v1694100000000!5m2!1ses-419!2sar" 
-                        style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2903.7201607380352!2d-65.09611348074361!3d-43.2991817061995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xbe01570fd77559a5%3A0x41e4d247a88a478b!2sCentro%20de%20Actividad%20Fisica%20Oxygeno!5e0!3m2!1ses!2sar!4v1764605773327!5m2!1ses!2sar" 
+                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
                 </div>
             </div>

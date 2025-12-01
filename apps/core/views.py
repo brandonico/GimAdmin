@@ -21,7 +21,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 #importa correo
-from apps.core.utils import enviar_correo
+from apps.core.utils import enviar_correo, recibir_correo
 from django.contrib.auth.models import User
 import random, string
 
@@ -33,7 +33,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def home(request):
     form = CrearAsistenciaForm()
-    if request.method == 'POST':
+
+    #formulario de asistencia
+    if request.method == 'POST' and 'dni' in request.POST:
         print(request.POST)
         form = CrearAsistenciaForm(request.POST)
         if form.is_valid():
@@ -64,8 +66,24 @@ def home(request):
                 }
                 return render(request, 'home.html', contexto)
         
+    #formulario de contacto
+    if request.method == 'POST' and 'nombre' in request.POST:
+        nombre = request.POST.get('nombre')
+        email = request.POST.get('email')
+        mensaje = request.POST.get('mensaje')
+
+        cuerpo = f"Nombre: {nombre}\nEmail: {email}\nMensaje:\n{mensaje}"
+
+        recibir_correo(
+            remitente=email,
+            asunto="Comunicacion - Nuevo mensaje desde la web",
+            contexto=cuerpo,
+            plantilla_html=None
+        )
+        return redirect('home')
+
     contexto = {
-        'form': form
+        'form': form,
     }
     return render(request, 'home.html', contexto)
 
@@ -215,6 +233,7 @@ def generar_contraseña_temporal(longitud=8):
 
 def recuperar_contraseña(request):
     mensaje = ""
+    exito = False
     if request.method == "POST":
         email = request.POST.get("email")
         try: 
@@ -235,11 +254,13 @@ def recuperar_contraseña(request):
                 contexto=str(contexto),
                 plantilla_html="emails/recuperar.html"
             )
+            exito = True
             mensaje = "Se ha enviado una nueva contraseña a tu correo."
         except User.DoesNotExist:
             mensaje = "No existe un usuario con ese correo."
+            exito = False
 
-    return render(request, "recuperar_contraseña.html", {"mensaje": mensaje})
+    return render(request, "recuperar_contraseña.html", {"mensaje": mensaje, "exito": exito})
 
 def permisos_insuficientes(request):
     return render(request, "permisos_insuficientes.html", {"mensaje" : 'mensaje'})

@@ -22,7 +22,6 @@
 
 <!-- Formulario -->
 <div class="col-md-6 mb-4 mx-auto text-center">
-
     <br><br>
     <h1>Recuperar Contraseña</h1>
     <br><br>
@@ -32,18 +31,20 @@
             <div class="m-3 form-group">
                 <label for="email" class="form-label text-start "><b><h5>Correo electronico</h5></b></label>
                 <br>
-                <input type="email" id="email" name="username" class="form-control input-recuperar my-2" placeholder='tu_correo@ejemplo.com' autofocus required title="Ingrese un Email valido" placeholder="email@ejemplo.com">
+                <input type="email" id="email" name="email" class="form-control input-recuperar my-2" placeholder='tu_correo@ejemplo.com' autofocus required title="Ingrese un Email valido" placeholder="email@ejemplo.com">
             </div>
             <br>
             <button type="submit" class="btn btn-primary">Recuperar Contraseña</button>
         </form>
     </div>
+    <br>
     {% if mensaje %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>ERROR!</strong>
-        {% for mensaje in mensajes %}
-            {{ mensaje }} <br>
-        {% endfor %}
+        {% if exito %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {% else %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {% endif %}
+    <strong>ERROR!</strong> {{mensaje}}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endif %}
